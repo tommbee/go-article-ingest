@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"os"
 
-	"./ingestor"
-	"./normaliser"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/tommbee/go-article-ingest/ingestor"
+	"github.com/tommbee/go-article-ingest/normaliser"
 )
 
 var (

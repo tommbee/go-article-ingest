@@ -4,7 +4,7 @@ import (
 	"errors"
 	"strings"
 
-	"../model"
+	"github.com/tommbee/go-article-ingest/model"
 )
 
 var (

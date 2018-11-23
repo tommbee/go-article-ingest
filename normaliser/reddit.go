@@ -3,7 +3,7 @@ package normaliser
 import (
 	"time"
 
-	"../model"
+	"github.com/tommbee/go-article-ingest/model"
 )
 
 type reddit struct{}
