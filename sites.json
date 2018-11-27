@@ -1,0 +1,12 @@
+{
+    "sources": [
+        {
+            "baseUrl": "sample",
+            "baseElement": ".streamItem--postPreview",
+            "titleElement": "h3.graf--leading",
+            "dateElement": "time",
+            "linkElement": "a[data-action-source]" ,
+            "dateFormat": "2018-10-26T03:35:46.274Z"
+        }
+    ]
+}

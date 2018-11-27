@@ -19,6 +19,14 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:59962322bce4b6efec5a2541c9311967d99e2872150fcbca3a6b2a7200e2e247"
+  name = "github.com/tommbee/go-article-feed"
+  packages = ["model"]
+  pruneopts = "UT"
+  revision = "116e207d8d378a90014d6c7f02f19ade63bcfeab"
+
+[[projects]]
+  branch = "master"
   digest = "1:1a1ecfa7b54ca3f7a0115ab5c578d7d6a5d8b605839c549e80260468c42f8be7"
   name = "golang.org/x/net"
   packages = [
@@ -28,9 +36,28 @@
   pruneopts = "UT"
   revision = "adae6a3d119ae4890b46832a2e88a95adc62b8e7"
 
+[[projects]]
+  branch = "v2"
+  digest = "1:988de7520a09024d5d94cd99bd545afbf194893994ec759b1cda0a0bbb6adb80"
+  name = "gopkg.in/mgo.v2"
+  packages = [
+    ".",
+    "bson",
+    "internal/json",
+    "internal/sasl",
+    "internal/scram",
+  ]
+  pruneopts = "UT"
+  revision = "9856a29383ce1c59f308dd1cf0363a79b5bef6b5"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  input-imports = ["github.com/PuerkitoBio/goquery"]
+  input-imports = [
+    "github.com/PuerkitoBio/goquery",
+    "github.com/tommbee/go-article-feed/model",
+    "gopkg.in/mgo.v2",
+    "gopkg.in/mgo.v2/bson",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1

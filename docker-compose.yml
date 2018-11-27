@@ -10,6 +10,8 @@ services:
       - SERVER=mongodb
       - DB=article
       - ARTICLE_COLLECTION=articles
+      - CONFIG_FILE=sites.json
+      - SOURCES=http://sample:8080?instance=1,http://sample:8080?instance=2
 
   sample:
     image: httpd:latest
