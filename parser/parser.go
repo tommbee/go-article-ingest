@@ -17,6 +17,8 @@ type Parser struct {
 
 // Parse the webpage
 func (p *Parser) Parse(URL string) ([]model.Article, error) {
+	log.Printf("Attempting request %s", URL)
+
 	res, err := http.Get(URL)
 	if err != nil {
 		return nil, err
@@ -50,6 +52,8 @@ func (p *Parser) Parse(URL string) ([]model.Article, error) {
 			article, err := p.normaliser.Normalise(title, link, date)
 			if err == nil {
 				articles = append(articles, article)
+			} else {
+				log.Printf("Error when parsing: %s", err)
 			}
 		}
 	})

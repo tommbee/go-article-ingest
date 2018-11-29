@@ -12,6 +12,7 @@ FROM alpine:3.7
 RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
 RUN update-ca-certificates
 WORKDIR /app
+COPY --from=build-env /go/src/github.com/tommbee/go-article-ingest/sites.json /app/sites.json
 COPY --from=build-env /go/src/github.com/tommbee/go-article-ingest/main /app/main
 EXPOSE 8080
 ENTRYPOINT ["/app/main"]

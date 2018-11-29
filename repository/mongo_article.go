@@ -3,6 +3,7 @@ package repository
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/tommbee/go-article-ingest/model"
 	mgo "gopkg.in/mgo.v2"
@@ -26,35 +27,11 @@ func (r *MongoArticleRepository) Connect() {
 	r.session = session
 }
 
-// Fetch all records from the article repository
-func (r *MongoArticleRepository) Fetch(num int) ([]*model.Article, error) {
-	r.Connect()
-	defer r.session.Close()
-	log.Print("Getting articles")
-	var articles []*model.Article
-	q := r.session.DB(r.DatabaseName).C(r.Collection).Find(bson.M{}).Limit(num)
-	err := q.All(&articles)
-	return articles, err
-}
-
-// GetByID an entity
-func (r *MongoArticleRepository) GetByID(id int64) (*model.Article, error) {
-	return nil, nil
-}
-
-// GetByTitle entity
-func (r *MongoArticleRepository) GetByTitle(title string) (*model.Article, error) {
-	return nil, nil
-}
-
-// GetByUrl entity
-func (r *MongoArticleRepository) GetByUrl(URL string) (*model.Article, error) {
-	return nil, nil
-}
-
 // Insert a record to the db
 func (r *MongoArticleRepository) Insert(a model.Article) error {
+	log.Printf("Attempting insert: %s", a.URL)
 	r.Connect()
+
 	defer r.session.Close()
 	c := r.session.DB(r.DatabaseName).C(r.Collection)
 	count, err := c.Find(bson.M{"url": a.URL}).Limit(1).Count()
@@ -64,5 +41,7 @@ func (r *MongoArticleRepository) Insert(a model.Article) error {
 	if count > 0 {
 		return fmt.Errorf("resource %s already exists", a.URL)
 	}
+	a.CreatedAt = time.Now()
+
 	return c.Insert(a)
 }

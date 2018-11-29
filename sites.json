@@ -6,7 +6,7 @@
             "titleElement": "h3.graf--leading",
             "dateElement": "time",
             "linkElement": "a[data-action-source]" ,
-            "dateFormat": "2018-10-26T03:35:46.274Z"
+            "dateFormat": "2006-01-02T15:04:05.000Z"
         }
     ]
 }

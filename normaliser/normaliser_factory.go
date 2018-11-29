@@ -18,7 +18,7 @@ func Generate(URL string) (*Normaliser, error) {
 	fn := os.Getenv("CONFIG_FILE")
 	jsonFile, err := os.Open(fn)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	defer jsonFile.Close()
 
@@ -28,6 +28,7 @@ func Generate(URL string) (*Normaliser, error) {
 	for i := 0; i < len(configs.Configs); i++ {
 		c := configs.Configs[i]
 		if strings.Contains(URL, c.BaseURL) {
+			log.Printf("Found normaliser! %s", c.BaseURL)
 			return &Normaliser{
 				DateFormat: c.DateFormat,
 			}, nil
