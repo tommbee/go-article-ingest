@@ -25,25 +25,25 @@ func parse(url string, ch chan string, chFinished chan bool) {
 	success := true
 	p, err := parser.Generate(url)
 	if err != nil {
-		log.Fatal(err)
+		success = false
+		log.Printf("Error on %s: %s", url, err)
 	}
 
-	// Parse
+	/** @todo: Add rabbit queue to handle normalise */
+	// Parse + Normalise
 	articles, err := p.Parse(url)
 	if err != nil || len(articles) == 0 {
-		//log.Fatal(err)
 		success = false
+		log.Printf("No articlces found on %s: %s", url, err)
 	}
 
-	// *Should send to rabbit queue for ingest*
-
+	/** @todo: Add rabbit queue to handle ingest */
 	// Ingest
 	repo := newRepo()
 	for _, ar := range articles {
 		err = repo.Insert(ar)
 		if err != nil {
-			//log.Fatalf("insert fail #%d %v\n", i, err)
-			success = false
+			log.Printf("Error on %s: %s", url, err)
 		}
 	}
 

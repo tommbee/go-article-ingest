@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"strings"
 
@@ -28,7 +27,6 @@ func Generate(URL string) (*Parser, error) {
 	for i := 0; i < len(configs.Configs); i++ {
 		c := configs.Configs[i]
 		if strings.Contains(URL, c.BaseURL) {
-			log.Printf("Found parser! %s", c.BaseURL)
 			return &Parser{
 				config: c,
 			}, nil

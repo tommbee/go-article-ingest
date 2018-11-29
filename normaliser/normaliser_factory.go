@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"strings"
 
@@ -28,7 +27,6 @@ func Generate(URL string) (*Normaliser, error) {
 	for i := 0; i < len(configs.Configs); i++ {
 		c := configs.Configs[i]
 		if strings.Contains(URL, c.BaseURL) {
-			log.Printf("Found normaliser! %s", c.BaseURL)
 			return &Normaliser{
 				DateFormat: c.DateFormat,
 			}, nil

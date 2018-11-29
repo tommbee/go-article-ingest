@@ -34,14 +34,14 @@ func (r *MongoArticleRepository) Insert(a model.Article) error {
 
 	defer r.session.Close()
 	c := r.session.DB(r.DatabaseName).C(r.Collection)
-	count, err := c.Find(bson.M{"url": a.URL}).Limit(1).Count()
+	count, err := c.Find(bson.M{"_id": a.URL}).Limit(1).Count()
 	if err != nil {
 		return err
 	}
 	if count > 0 {
 		return fmt.Errorf("resource %s already exists", a.URL)
 	}
-	a.CreatedAt = time.Now()
 
+	a.CreatedAt = time.Now()
 	return c.Insert(a)
 }
