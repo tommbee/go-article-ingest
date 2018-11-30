@@ -1,4 +1,4 @@
-package parser
+package poller
 
 import (
 	"log"
@@ -6,17 +6,22 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/tommbee/go-article-ingest/model"
-	"github.com/tommbee/go-article-ingest/normaliser"
 )
 
-// Parser object parses content from a URL
-type Parser struct {
-	config     model.Config
-	normaliser *normaliser.Normaliser
+// Poller object parses content from a URL
+type Poller struct {
+	config model.Config
 }
 
-// Parse the webpage
-func (p *Parser) Parse(URL string) ([]model.Article, error) {
+// ArticleData Basic struct to hold article data
+type ArticleData struct {
+	Title string
+	Link  string
+	Date  string
+}
+
+// Poll the URL
+func (p *Poller) Poll(URL string) ([]ArticleData, error) {
 	log.Printf("Attempting request %s", URL)
 
 	res, err := http.Get(URL)
@@ -33,12 +38,7 @@ func (p *Parser) Parse(URL string) ([]model.Article, error) {
 		return nil, err
 	}
 
-	articles := []model.Article{}
-
-	p.normaliser, err = normaliser.Generate(URL)
-	if err != nil {
-		return articles, err
-	}
+	articles := []ArticleData{}
 
 	doc.Find(p.config.BaseElement).Each(func(i int, s *goquery.Selection) {
 		// Add checks here to determine if these els have been found
@@ -49,12 +49,12 @@ func (p *Parser) Parse(URL string) ([]model.Article, error) {
 		if ok {
 			date := d.Text()
 			title := t.Text()
-			article, err := p.normaliser.Normalise(title, link, date)
-			if err == nil {
-				articles = append(articles, article)
-			} else {
-				log.Printf("Error when parsing: %s", err)
+			article := ArticleData{
+				Title: title,
+				Date:  date,
+				Link:  link,
 			}
+			articles = append(articles, article)
 		}
 	})
 

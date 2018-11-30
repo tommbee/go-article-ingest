@@ -5,7 +5,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/tommbee/go-article-ingest/parser"
+	"github.com/tommbee/go-article-ingest/model"
+	"github.com/tommbee/go-article-ingest/normaliser"
+	"github.com/tommbee/go-article-ingest/poller"
 	"github.com/tommbee/go-article-ingest/repository"
 )
 
@@ -20,24 +22,43 @@ func newRepo() *repository.MongoArticleRepository {
 	return ro
 }
 
-func parse(url string, ch chan string, chFinished chan bool) {
-	// Factory generate parser
+func poll(url string, ch chan string, chFinished chan bool) {
 	success := true
-	p, err := parser.Generate(url)
+
+	// Factory generate poller
+	p, err := poller.Generate(url)
 	if err != nil {
 		success = false
-		log.Printf("Error on %s: %s", url, err)
+		log.Printf("Error finding poller %s: %s", url, err)
 	}
 
-	/** @todo: Add rabbit queue to handle normalise */
-	// Parse + Normalise
-	articles, err := p.Parse(url)
-	if err != nil || len(articles) == 0 {
+	// Poll URL
+	articleData, err := p.Poll(url)
+	if err != nil || len(articleData) == 0 {
 		success = false
 		log.Printf("No articlces found on %s: %s", url, err)
 	}
 
-	/** @todo: Add rabbit queue to handle ingest */
+	/** @todo: Add rabbit queue to handle normalise separately */
+	// Factory generate normaliser
+	n, err := normaliser.Generate(url)
+	if err != nil {
+		success = false
+		log.Printf("Error finding normaliser %s: %s", url, err)
+	}
+
+	// Normalise articles
+	articles := []model.Article{}
+	for _, ad := range articleData {
+		a, err := n.Normalise(ad.Title, ad.Link, ad.Date)
+		if err == nil {
+			articles = append(articles, a)
+		} else {
+			log.Printf("Error normalising article %s: %s", a, err)
+		}
+	}
+
+	/** @todo: Add rabbit queue to handle ingest separately */
 	// Ingest
 	repo := newRepo()
 	for _, ar := range articles {
@@ -66,7 +87,7 @@ func main() {
 	chFinished := make(chan bool)
 
 	for _, url := range sourceUrls {
-		go parse(url, chUrls, chFinished)
+		go poll(url, chUrls, chFinished)
 	}
 
 	successUrls := make([]string, 0)

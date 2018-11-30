@@ -1,4 +1,4 @@
-package parser
+package poller
 
 import (
 	"encoding/json"
@@ -12,8 +12,8 @@ import (
 
 var configs model.Configs
 
-// Generate a suitable parser
-func Generate(URL string) (*Parser, error) {
+// Generate a suitable poller
+func Generate(URL string) (*Poller, error) {
 	fn := os.Getenv("CONFIG_FILE")
 	jsonFile, err := os.Open(fn)
 	if err != nil {
@@ -27,10 +27,10 @@ func Generate(URL string) (*Parser, error) {
 	for i := 0; i < len(configs.Configs); i++ {
 		c := configs.Configs[i]
 		if strings.Contains(URL, c.BaseURL) {
-			return &Parser{
+			return &Poller{
 				config: c,
 			}, nil
 		}
 	}
-	return &Parser{}, fmt.Errorf("Config for parser not found")
+	return &Poller{}, fmt.Errorf("Config for parser not found")
 }
