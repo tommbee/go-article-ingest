@@ -1,47 +1,99 @@
 package repository
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"time"
 
+	"github.com/mongodb/mongo-go-driver/mongo"
 	"github.com/tommbee/go-article-ingest/model"
-	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
 // MongoArticleRepository interfaces with a mongo db instance
 type MongoArticleRepository struct {
-	Server       string
+	Server       []string
 	DatabaseName string
 	Collection   string
-	session      *mgo.Session
+	Username     string
+	Password     string
+	ReplicaSet   string
+	db           *mongo.Database
 }
+
+type key string
+
+const (
+	hostKey     = key("hostKey")
+	usernameKey = key("usernameKey")
+	passwordKey = key("passwordKey")
+	databaseKey = key("databaseKey")
+)
 
 // Connect to the db instance
 func (r *MongoArticleRepository) Connect() {
-	session, err := mgo.Dial(r.Server)
+	log.Print("Connecting...")
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+	ctx = context.WithValue(ctx, hostKey, r.Server)
+	ctx = context.WithValue(ctx, usernameKey, r.Username)
+	ctx = context.WithValue(ctx, passwordKey, r.Password)
+	ctx = context.WithValue(ctx, databaseKey, r.DatabaseName)
+	db, err := configDB(ctx)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("todo: database configuration failed: %v", err)
 	}
-	r.session = session
+	r.db = db
+}
+
+func configDB(ctx context.Context) (*mongo.Database, error) {
+	uri := fmt.Sprintf(`mongodb://%s:%s@%s/%s`,
+		ctx.Value(usernameKey),
+		ctx.Value(passwordKey),
+		ctx.Value(hostKey),
+		ctx.Value(databaseKey),
+	)
+	client, err := mongo.NewClient(uri)
+	if err != nil {
+		return nil, fmt.Errorf("todo: couldn't connect to mongo: %v", err)
+	}
+	err = client.Connect(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("todo: mongo client couldn't connect with background context: %v", err)
+	}
+	dbName := ctx.Value(databaseKey).(string)
+	articleDB := client.Database(dbName)
+	return articleDB, nil
 }
 
 // Insert a record to the db
-func (r *MongoArticleRepository) Insert(a model.Article) error {
+func (r *MongoArticleRepository) Insert(a model.Article) (model.Article, error) {
 	log.Printf("Attempting insert: %s", a.URL)
 	r.Connect()
-
-	defer r.session.Close()
-	c := r.session.DB(r.DatabaseName).C(r.Collection)
-	count, err := c.Find(bson.M{"_id": a.URL}).Limit(1).Count()
+	collection := r.db.Collection(r.Collection)
+	count, err := collection.Count(context.Background(), bson.M{"_id": a.URL})
 	if err != nil {
-		return err
+		return a, err
 	}
 	if count > 0 {
-		return fmt.Errorf("resource %s already exists", a.URL)
+		return a, fmt.Errorf("resource %s already exists", a.URL)
 	}
 
 	a.CreatedAt = time.Now()
-	return c.Insert(a)
+
+	res, err := collection.InsertOne(context.Background(), bson.M{
+		"title":      a.Title,
+		"url":        a.URL,
+		"published":  a.Published,
+		"created_at": a.CreatedAt,
+	})
+
+	if err != nil {
+		return a, err
+	}
+
+	log.Printf("Inserted record: %s", res.InsertedID)
+	return a, nil
 }

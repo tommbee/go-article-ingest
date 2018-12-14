@@ -6,5 +6,5 @@ import (
 
 // ArticleRepository handles the interface to persistant storage
 type ArticleRepository interface {
-	Insert(*model.Article) error
+	Insert(*model.Article) (model.Article, error)
 }
