@@ -1,0 +1,55 @@
+version: 2
+jobs:
+  build:
+    machine: true
+    steps:
+      - checkout
+      - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
+      - run: docker build --build-arg COMMIT_REF=${CIRCLE_SHA1} --build-arg BUILD_DATE=`date -u +”%Y-%m-%dT%H:%M:%SZ”` -t $DOCKER_IMAGE_URL:$CIRCLE_SHA1 .
+      - run: docker push $DOCKER_IMAGE_URL:$CIRCLE_SHA1
+  test:
+    docker:
+      - image: circleci/golang:1.8
+    working_directory: /go/src/github.com/tommbee/go-article-ingest
+    steps:
+      - checkout
+      - run: go get
+      - run: go test
+  deploy:
+    docker:
+      - image: google/cloud-sdk
+    steps:
+      - checkout
+      - run: chmod +x ./deployment/deploy.sh
+      - run: bash ./deployment/deploy.sh
+workflows:
+  version: 2
+  untagged-build:
+    jobs:
+      - build:
+          filters:
+            tags:
+              ignore: /.*/
+            branches:
+              ignore: master
+      - test:
+          requires:
+            - build
+  tagged-build:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              only: master
+      - test:
+          requires:
+            - build
+      - hold:
+          type: approval
+          requires:
+            - test
+      - deploy:
+          requires:
+            - hold
