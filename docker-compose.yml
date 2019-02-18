@@ -3,20 +3,23 @@ services:
   web:
     build: .
     container_name: ingest-app
+    volumes:
+      - './sites.json:/config/parsed.json'
     ports:
       - 8080:8080
     depends_on:
       - "sample"
       - "mongodb"
     environment:
-      - PORT=8080
       - SERVER=mongodb
       - DB=article
       - ARTICLE_COLLECTION=articles
       - DB_USER=article_user
       - DB_PASSWORD=article123
-      - CONFIG_FILE=sites.json
+      - CONFIG_FILE=/config/parsed.json
       - SOURCES=http://sample-webpage?instance=1,http://sample-webpage?instance=2
+      - AUTH_DB=article
+      - DB_SSL=false
 
   sample:
     image: httpd:latest
