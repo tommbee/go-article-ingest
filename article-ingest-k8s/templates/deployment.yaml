@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "article-ingest-k8s.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "article-ingest-k8s.name" . }}
+    helm.sh/chart: {{ include "article-ingest-k8s.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "article-ingest-k8s.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "article-ingest-k8s.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          - name: SERVER
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name }}-secret
+                key: server
+          - name: DB
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name }}-secret
+                key: db
+          - name: ARTICLE_COLLECTION
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name }}-secret
+                key: collection
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name }}-secret
+                key: username
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name }}-secret
+                key: password
+          - name: AUTH_DB
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name }}-secret
+                key: authdb
+          - name: DB_SSL
+            valueFrom:
+              configMapKeyRef:
+                key:  dbSsl
+                name: {{ .Release.Name }}-configmap
+          - name: CONFIG_FILE
+            valueFrom:
+              configMapKeyRef:
+                key:  configFileLocation
+                name: {{ .Release.Name }}-configmap
+          - name: SOURCES
+            valueFrom:
+              configMapKeyRef:
+                key:  sources
+                name: {{ .Release.Name }}-configmap
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            exec:
+              command:
+              - ps -ef | grep "[m]ain"
+            initialDelaySeconds: 3
+            periodSeconds: 15
+          readinessProbe:
+            exec:
+              command:
+              - ps -ef | grep "[m]ain"
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
