@@ -1,7 +1,7 @@
 {
     "sources": [
         {
-            "baseUrl": "sample",
+            "baseUrl": "sample-webpage",
             "baseElement": ".streamItem--postPreview",
             "titleElement": "h3.graf--leading",
             "dateElement": "time",
