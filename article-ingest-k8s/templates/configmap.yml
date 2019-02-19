@@ -9,5 +9,6 @@ data:
   authDb: "{{ .Values.authDb }}"
   dbSsl: "{{ .Values.dbSsl }}"
   configFileLocation: "{{ .Values.configFileLocation }}"
+  sources: "{{ .Values.sources }}"
 metadata:
   name: {{ .Release.Name }}-configmap
