@@ -1,7 +1,6 @@
 apiVersion: v1
 kind: ConfigMap
 data:
-  port: "{{ .Values.port }}"
   server: "{{ .Values.server }}"
   db: "{{ .Values.db }}"
   articleCollection: "{{ .Values.articleCollection }}"
@@ -9,5 +8,6 @@ data:
   dbPassword: "{{ .Values.dbPassword }}"
   authDb: "{{ .Values.authDb }}"
   dbSsl: "{{ .Values.dbSsl }}"
+  configFileLocation: "{{ .Values.configFileLocation }}"
 metadata:
   name: {{ .Release.Name }}-configmap
