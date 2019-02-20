@@ -2,11 +2,24 @@ version: 2
 jobs:
   build:
     docker:
-       - image: docker
+       - image: google/cloud-sdk
     steps:
       - checkout
       - run: chmod +x ./deployment/build.sh
       - run: bash ./deployment/build.sh
+      - persist_to_workspace:
+        root: .
+        paths:
+          - docker-cache
+  tag:
+    machine: true
+    steps:
+      - checkout
+      - attach_workspace:          
+        at: . 
+      - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
+      - run: docker load --input docker-cache/built-image.tar
+      - run: docker push $DOCKER_IMAGE_URL:$CIRCLE_SHA1
   test:
     docker:
       - image: circleci/golang:1.8
@@ -45,9 +58,12 @@ workflows:
               only: /^v.*/
             branches:
               only: master
-      - test:
+      - tag:
           requires:
             - build
+      - test:
+          requires:
+            - tag
       - hold:
           type: approval
           requires:
