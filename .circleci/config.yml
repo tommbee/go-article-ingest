@@ -8,15 +8,15 @@ jobs:
       - run: chmod +x ./deployment/build.sh
       - run: bash ./deployment/build.sh
       - persist_to_workspace:
-        root: .
-        paths:
-          - docker-cache
+          root: .
+          paths:
+            - docker-cache
   tag:
     machine: true
     steps:
       - checkout
       - attach_workspace:          
-        at: . 
+          at: . 
       - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
       - run: docker load --input docker-cache/built-image.tar
       - run: docker push $DOCKER_IMAGE_URL:$CIRCLE_SHA1
