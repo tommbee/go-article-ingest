@@ -1,8 +1,7 @@
 version: 2
 jobs:
   build:
-    docker:
-       - image: google/cloud-sdk
+    machine: true
     steps:
       - checkout
       - run: chmod +x ./deployment/build.sh
