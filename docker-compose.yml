@@ -1,10 +1,11 @@
 version: '2'
 services:
   web:
-    build: .
+    build:
+      context: .
+      args: 
+        CONFIG_FILENAME: sites.json
     container_name: ingest-app
-    volumes:
-      - './sites.json:/config/parsed.json'
     ports:
       - 8080:8080
     depends_on:
@@ -16,7 +17,7 @@ services:
       - ARTICLE_COLLECTION=articles
       - DB_USER=article_user
       - DB_PASSWORD=article123
-      - CONFIG_FILE=/config/parsed.json
+      - CONFIG_FILE=/app/config.json
       - SOURCES=http://sample-webpage?instance=1,http://sample-webpage?instance=2
       - AUTH_DB=article
       - DB_SSL=false

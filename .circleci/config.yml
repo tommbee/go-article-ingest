@@ -1,12 +1,12 @@
 version: 2
 jobs:
   build:
-    machine: true
+    docker:
+       - image: google/cloud-sdk
     steps:
       - checkout
-      - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
-      - run: docker build --build-arg COMMIT_REF=${CIRCLE_SHA1} -t $DOCKER_IMAGE_URL:$CIRCLE_SHA1 .
-      - run: docker push $DOCKER_IMAGE_URL:$CIRCLE_SHA1
+      - run: chmod +x ./deployment/build.sh
+      - run: bash ./deployment/build.sh
   test:
     docker:
       - image: circleci/golang:1.8
