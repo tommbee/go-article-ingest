@@ -76,14 +76,16 @@ spec:
           livenessProbe:
             exec:
               command:
-              - sh
+              - /bin/bash
+              - -c
               - ps -ef | grep "[m]ain"
             initialDelaySeconds: 3
             periodSeconds: 15
           readinessProbe:
             exec:
               command:
-              - sh
+              - /bin/bash
+              - -c
               - ps -ef | grep "[m]ain"
             initialDelaySeconds: 10
             periodSeconds: 15
