@@ -14,9 +14,9 @@ jobs:
   tag:
     machine: true
     steps:
+      - checkout
       - attach_workspace:          
           at: . 
-      - checkout
       - run: cp site-config/${CONFIG_FILENAME} ./${CONFIG_FILENAME}
       - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
       - run: docker build --build-arg CONFIG_FILENAME=${CONFIG_FILENAME} -t $DOCKER_IMAGE_URL:$CIRCLE_SHA1 .
