@@ -73,22 +73,22 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
-          # livenessProbe:
-          #   exec:
-          #     command:
-          #     - sh
-          #     - -c
-          #     - ps -ef | grep "[m]ain"
-          #   initialDelaySeconds: 3
-          #   periodSeconds: 15
-          # readinessProbe:
-          #   exec:
-          #     command:
-          #     - sh
-          #     - -c
-          #     - ps -ef | grep "[m]ain"
-          #   initialDelaySeconds: 10
-          #   periodSeconds: 15
+          livenessProbe:
+            exec:
+              command:
+              - sh
+              - -c
+              - ps -ef | grep "[m]ain"
+            initialDelaySeconds: 3
+            periodSeconds: 15
+          readinessProbe:
+            exec:
+              command:
+              - sh
+              - -c
+              - ps -ef | grep "[m]ain"
+            initialDelaySeconds: 10
+            periodSeconds: 15
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

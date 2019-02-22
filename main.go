@@ -135,11 +135,10 @@ func initPolling() {
 }
 
 func main() {
-	// jt := NewJobTicker()
-	// for {
-	// 	<-jt.t.C
-	// 	initPolling()
-	// 	jt.updateJobTicker()
-	// }
-	initPolling()
+	jt := NewJobTicker()
+	for {
+		<-jt.t.C
+		initPolling()
+		jt.updateJobTicker()
+	}
 }
