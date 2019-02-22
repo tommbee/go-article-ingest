@@ -3,6 +3,7 @@ package poller
 import (
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/tommbee/go-article-ingest/model"
@@ -48,6 +49,9 @@ func (p *Poller) Poll(URL string) ([]ArticleData, error) {
 		link, ok := a.Attr("href")
 		date, dok := d.Attr("datetime")
 		if ok && dok {
+			if !strings.HasPrefix(link, p.config.BaseURL) {
+				link = p.config.BaseURL + link
+			}
 			title := t.Text()
 			article := ArticleData{
 				Title: title,
