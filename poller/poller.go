@@ -46,8 +46,8 @@ func (p *Poller) Poll(URL string) ([]ArticleData, error) {
 		d := s.Find(p.config.DateElement).First()
 		t := s.Find(p.config.TitleElement).First()
 		link, ok := a.Attr("href")
-		if ok {
-			date := d.Text()
+		date, dok := d.Attr("datetime")
+		if ok && dok {
 			title := t.Text()
 			article := ArticleData{
 				Title: title,
