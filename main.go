@@ -3,10 +3,12 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"strings"
 	"time"
 
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/tommbee/go-article-ingest/model"
 	"github.com/tommbee/go-article-ingest/normaliser"
 	"github.com/tommbee/go-article-ingest/poller"
@@ -134,13 +136,19 @@ func initPolling() {
 	log.Printf("Succesfully parsed: %s", successUrls)
 }
 
-func main() {
-	initPolling()
-
+func setUpTimer() {
 	jt := NewJobTicker()
 	for {
 		<-jt.t.C
 		initPolling()
 		jt.updateJobTicker()
 	}
+}
+
+func main() {
+	initPolling()
+	setUpTimer()
+
+	http.Handle("/metrics", promhttp.Handler())
+	http.ListenAndServe(":2112", nil)
 }
