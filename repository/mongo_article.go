@@ -74,6 +74,7 @@ func configDB(ctx context.Context) (*mongo.Database, error) {
 	}
 	dbName := ctx.Value(databaseKey).(string)
 	articleDB := client.Database(dbName)
+	defer client.Disconnect(ctx)
 	return articleDB, nil
 }
 
