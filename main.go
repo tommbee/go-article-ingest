@@ -3,12 +3,10 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 	"strings"
 	"time"
 
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/tommbee/go-article-ingest/model"
 	"github.com/tommbee/go-article-ingest/normaliser"
 	"github.com/tommbee/go-article-ingest/poller"
@@ -137,9 +135,6 @@ func initPolling() {
 }
 
 func main() {
-	http.Handle("/metrics", promhttp.Handler())
-	http.ListenAndServe(":2112", nil)
-
 	initPolling()
 
 	jt := NewJobTicker()
