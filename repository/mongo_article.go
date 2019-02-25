@@ -24,6 +24,8 @@ type MongoArticleRepository struct {
 	db           *mongo.Database
 }
 
+type ctx *context.Context
+
 // type key string
 
 // const (
@@ -106,8 +108,32 @@ type MongoArticleRepository struct {
 // 	return a, nil
 // }
 
-// Connect to the db instance
-func (r *MongoArticleRepository) Connect() (*mongo.Client, error) {
+// // Connect to the db instance
+// func (r *MongoArticleRepository) Connect() (*mongo.Client, error) {
+// 	log.Print("Connecting...")
+
+// 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+// 	defer cancel()
+
+// 	uri := fmt.Sprintf(`mongodb://%s:%s@%s/%s?authSource=%s&ssl=%s`,
+// 		r.Username,
+// 		r.Password,
+// 		r.Server,
+// 		r.DatabaseName,
+// 		r.AuthDatabase,
+// 		r.DBSSL,
+// 	)
+
+// 	log.Print(uri)
+
+// 	client, err := mongo.Connect(ctx, uri)
+
+// 	return client, err
+// }
+
+// Insert a record to the db
+func (r *MongoArticleRepository) Insert(a model.Article) (model.Article, error) {
+	//client, err := r.Connect()
 	log.Print("Connecting...")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -125,13 +151,6 @@ func (r *MongoArticleRepository) Connect() (*mongo.Client, error) {
 	log.Print(uri)
 
 	client, err := mongo.Connect(ctx, uri)
-
-	return client, err
-}
-
-// Insert a record to the db
-func (r *MongoArticleRepository) Insert(a model.Article) (model.Article, error) {
-	client, err := r.Connect()
 
 	if err != nil {
 		log.Fatalf("todo: database configuration failed: %v", err)
@@ -159,7 +178,7 @@ func (r *MongoArticleRepository) Insert(a model.Article) (model.Article, error) 
 		return a, err
 	}
 
-	err = client.Disconnect(context.TODO())
+	err = client.Disconnect(ctx)
 
 	if err != nil {
 		return a, err
