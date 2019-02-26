@@ -28,16 +28,16 @@ kubectl apply -f ./article-ingest-k8s/namespace.yml
 
 ## deploy helm chart
 echo "Deploying helm chart..."
-helm upgrade -i article-ingest ./article-ingest-k8s \ 
-                --set image.repository=${DOCKER_IMAGE_URL} \ 
-                --set image.tag=${CIRCLE_SHA1} \ 
-                --set sources="${SOURCES}" \ 
-                --set server=${SERVER} \ 
-                --set db=${DB} \ 
-                --set configFileLocation="${CONFIG_LOCATION}" \ 
-                --set articleCollection=${ARTICLE_COLLECTION} \ 
-                --set dbUser=${DB_USER} \ 
-                --set dbPassword=${DB_PASSWORD} \ 
-                --set authDb=${AUTH_DB} \ 
-                --set dbSsl=${DB_SSL} \ 
+helm upgrade -i article-ingest ./article-ingest-k8s \
+                --set image.repository=${DOCKER_IMAGE_URL} \
+                --set image.tag=${CIRCLE_SHA1} \
+                --set sources="${SOURCES}" \
+                --set server=${SERVER} \
+                --set db=${DB} \
+                --set configFileLocation="${CONFIG_LOCATION}" \
+                --set articleCollection=${ARTICLE_COLLECTION} \
+                --set dbUser=${DB_USER} \
+                --set dbPassword=${DB_PASSWORD} \
+                --set authDb=${AUTH_DB} \
+                --set dbSsl=${DB_SSL} \
                 --namespace ${NAMESPACE}
