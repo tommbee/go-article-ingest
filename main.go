@@ -3,12 +3,10 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 	"strings"
 	"time"
 
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/tommbee/go-article-ingest/model"
 	"github.com/tommbee/go-article-ingest/normaliser"
 	"github.com/tommbee/go-article-ingest/poller"
@@ -16,12 +14,6 @@ import (
 )
 
 var repo *repository.ArticleRepository
-
-const INTERVAL_PERIOD time.Duration = 2 * time.Hour
-
-type jobTicker struct {
-	t *time.Timer
-}
 
 func newRepo() *repository.MongoArticleRepository {
 	ro := &repository.MongoArticleRepository{
@@ -34,20 +26,6 @@ func newRepo() *repository.MongoArticleRepository {
 		Password:     os.Getenv("DB_PASSWORD"),
 	}
 	return ro
-}
-
-func getNextTickDuration() time.Duration {
-	now := time.Now()
-	nextTick := time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second(), 0, time.Local)
-	if nextTick.Before(now) {
-		nextTick = nextTick.Add(INTERVAL_PERIOD)
-	}
-	return nextTick.Sub(time.Now())
-}
-
-func NewJobTicker() jobTicker {
-	fmt.Println("new tick here")
-	return jobTicker{time.NewTimer(getNextTickDuration())}
 }
 
 func poll(url string, ch chan string, chFinished chan bool) {
@@ -105,11 +83,6 @@ func poll(url string, ch chan string, chFinished chan bool) {
 	}
 }
 
-func (jt jobTicker) updateJobTicker() {
-	fmt.Println("next tick here")
-	jt.t.Reset(getNextTickDuration())
-}
-
 func initPolling() {
 	fmt.Println(time.Now(), " - init polling")
 	sourceEnv := os.Getenv("SOURCES")
@@ -136,19 +109,6 @@ func initPolling() {
 	log.Printf("Succesfully parsed: %s", successUrls)
 }
 
-func setUpTimer() {
-	jt := NewJobTicker()
-	for {
-		<-jt.t.C
-		initPolling()
-		jt.updateJobTicker()
-	}
-}
-
 func main() {
 	initPolling()
-	setUpTimer()
-
-	http.Handle("/metrics", promhttp.Handler())
-	http.ListenAndServe(":2112", nil)
 }

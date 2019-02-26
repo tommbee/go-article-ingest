@@ -24,7 +24,7 @@ type MongoArticleRepository struct {
 	db           *mongo.Database
 }
 
-type ctx *context.Context
+//type ctx *context.Context
 
 // type key string
 
@@ -151,6 +151,7 @@ func (r *MongoArticleRepository) Insert(a model.Article) (model.Article, error) 
 	log.Print(uri)
 
 	client, err := mongo.Connect(ctx, uri)
+	defer client.Disconnect(ctx)
 
 	if err != nil {
 		log.Fatalf("todo: database configuration failed: %v", err)
