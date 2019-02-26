@@ -3,11 +3,15 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"strings"
 	"time"
 
 	"github.com/jasonlvhit/gocron"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/tommbee/go-article-ingest/model"
 	"github.com/tommbee/go-article-ingest/normaliser"
 	"github.com/tommbee/go-article-ingest/poller"
@@ -15,6 +19,22 @@ import (
 )
 
 var repo *repository.ArticleRepository
+var opsProcessed = promauto.NewCounter(prometheus.CounterOpts{
+	Name: "article_app_processed_ops_total",
+	Help: "The total number of parsed articles",
+})
+var normaliserErrors = promauto.NewCounter(prometheus.CounterOpts{
+	Name: "article_app_normaliser_errors",
+	Help: "The total number of errors from normaliser",
+})
+var noArticleErrors = promauto.NewCounter(prometheus.CounterOpts{
+	Name: "article_app_no_article_errors",
+	Help: "The total number of no article errors",
+})
+var dbErrors = promauto.NewCounter(prometheus.CounterOpts{
+	Name: "article_app_db_errors",
+	Help: "The total number of DB errors",
+})
 
 func newRepo() *repository.MongoArticleRepository {
 	ro := &repository.MongoArticleRepository{
@@ -43,6 +63,7 @@ func poll(url string, ch chan string, chFinished chan bool) {
 	articleData, err := p.Poll(url)
 	if err != nil || len(articleData) == 0 {
 		success = false
+		noArticleErrors.Inc()
 		log.Printf("No articlces found on %s: %s", url, err)
 	}
 
@@ -61,6 +82,7 @@ func poll(url string, ch chan string, chFinished chan bool) {
 		if err == nil {
 			articles = append(articles, a)
 		} else {
+			normaliserErrors.Inc()
 			log.Printf("Error normalising article %s: %s", a, err)
 		}
 	}
@@ -71,6 +93,7 @@ func poll(url string, ch chan string, chFinished chan bool) {
 	for _, ar := range articles {
 		_, err := repo.Insert(ar)
 		if err != nil {
+			dbErrors.Inc()
 			log.Printf("Error on %s: %s", url, err)
 		}
 	}
@@ -80,6 +103,8 @@ func poll(url string, ch chan string, chFinished chan bool) {
 	}()
 
 	if success {
+		log.Println("Success")
+		opsProcessed.Inc()
 		ch <- url
 	}
 }
@@ -116,4 +141,7 @@ func main() {
 	fmt.Println(time)
 	// function Start start all the pending jobs
 	<-gocron.Start()
+
+	http.Handle("/metrics", promhttp.Handler())
+	http.ListenAndServe(":2112", nil)
 }
