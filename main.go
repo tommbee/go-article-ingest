@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jasonlvhit/gocron"
 	"github.com/tommbee/go-article-ingest/model"
 	"github.com/tommbee/go-article-ingest/normaliser"
 	"github.com/tommbee/go-article-ingest/poller"
@@ -110,5 +111,9 @@ func initPolling() {
 }
 
 func main() {
-	initPolling()
+	gocron.Every(1).Hour().Do(initPolling)
+	_, time := gocron.NextRun()
+	fmt.Println(time)
+	// function Start start all the pending jobs
+	<-gocron.Start()
 }
