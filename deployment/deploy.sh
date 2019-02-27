@@ -12,6 +12,13 @@ if [[ $((helm) 2>&1 | grep "command not found" ) ]]; then
     curl https://raw.githubusercontent.com/helm/helm/master/scripts/get > get_helm.sh
     chmod 700 get_helm.sh
     ./get_helm.sh
+    kubectl --namespace kube-system create sa tiller
+    kubectl create clusterrolebinding tiller \
+    --clusterrole cluster-admin \
+    --serviceaccount=kube-system:tiller
+    echo "initialize helm"
+    helm init --service-account tiller
+    helm repo update
 fi
 
 ## authenticate with GKE
