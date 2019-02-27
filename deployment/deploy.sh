@@ -3,6 +3,7 @@
 echo 'Deploying...'
 
 export NAMESPACE=article-app
+export MONITORING_NAMESPACE=monitoring
 
 ## install helm
 echo "Get Helm installed..."
@@ -22,8 +23,14 @@ gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
 gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
 gcloud --quiet container clusters get-credentials ${GOOGLE_CLUSTER_NAME}
 
+## install prometheus
+echo "Installing prometheus..."
+helm repo add coreos https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
+helm install --name prometheus-operator --namespace ${MONITORING_NAMESPACE} stable/prometheus-operator
+helm install --name kube-prometheus --namespace ${MONITORING_NAMESPACE} coreos/kube-prometheus --set global.rbacEnable=true
+
 ## create namespace
-echo "Creaeting app namespace..."
+echo "Creating app namespace..."
 kubectl apply -f ./article-ingest-k8s/namespace.yml
 
 ## deploy helm chart

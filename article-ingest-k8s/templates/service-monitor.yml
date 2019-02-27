@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "article-ingest-k8s.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "article-ingest-k8s.name" . }}
+    helm.sh/chart: {{ include "article-ingest-k8s.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "article-ingest-k8s.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  namespaceSelector:
+    matchNames:
+    - {{ .Values.nameSpace }}
+  endpoints:
+  - port: http
+    interval: 30s
