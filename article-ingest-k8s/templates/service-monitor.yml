@@ -12,9 +12,9 @@ spec:
     matchLabels:
       app.kubernetes.io/name: {{ include "article-ingest-k8s.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
-  namespaceSelector:
-    matchNames:
-    - {{ .Values.nameSpace }}
+  # namespaceSelector:
+  #   matchNames:
+  #   - {{ .Values.nameSpace }}
   endpoints:
   - port: http
     interval: 30s

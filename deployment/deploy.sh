@@ -36,8 +36,12 @@ helm repo update
 
 ## install prometheus
 echo "Installing prometheus..."
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/alertmanager.crd.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/prometheus.crd.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/prometheusrule.crd.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/servicemonitor.crd.yaml
 helm repo add coreos https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
-helm install --name prometheus-operator --namespace ${MONITORING_NAMESPACE} stable/prometheus-operator
+helm install --name prometheus-operator --namespace ${MONITORING_NAMESPACE} stable/prometheus-operator --set prometheusOperator.createCustomResource=false
 helm install --name kube-prometheus --namespace ${MONITORING_NAMESPACE} coreos/kube-prometheus --set global.rbacEnable=true
 
 ## create namespace
