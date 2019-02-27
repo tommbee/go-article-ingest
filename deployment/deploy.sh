@@ -29,14 +29,14 @@ kubectl --namespace kube-system create sa tiller
 kubectl create clusterrolebinding tiller \
 --clusterrole cluster-admin \
 --serviceaccount=kube-system:tiller
+
 echo "initialize helm"
-helm init --service-account tiller
+helm init --upgrade --service-account tiller
 helm repo update
 
 ## install prometheus
 echo "Installing prometheus..."
-helm init
-helm repo add coreos https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
+#helm repo add coreos https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
 helm install --name prometheus-operator --namespace ${MONITORING_NAMESPACE} stable/prometheus-operator
 helm install --name kube-prometheus --namespace ${MONITORING_NAMESPACE} coreos/kube-prometheus --set global.rbacEnable=true
 
