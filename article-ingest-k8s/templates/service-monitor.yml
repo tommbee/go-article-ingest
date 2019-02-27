@@ -3,6 +3,7 @@ kind: ServiceMonitor
 metadata:
   name: {{ include "article-ingest-k8s.fullname" . }}
   labels:
+    prometheus: kube-prometheus
     app.kubernetes.io/name: {{ include "article-ingest-k8s.name" . }}
     helm.sh/chart: {{ include "article-ingest-k8s.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
