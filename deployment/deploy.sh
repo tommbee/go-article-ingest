@@ -36,7 +36,7 @@ helm repo update
 
 ## install prometheus
 echo "Installing prometheus..."
-#helm repo add coreos https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
+helm repo add coreos https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
 helm install --name prometheus-operator --namespace ${MONITORING_NAMESPACE} stable/prometheus-operator
 helm install --name kube-prometheus --namespace ${MONITORING_NAMESPACE} coreos/kube-prometheus --set global.rbacEnable=true
 
