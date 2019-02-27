@@ -5,23 +5,6 @@ echo 'Deploying...'
 export NAMESPACE=article-app
 export MONITORING_NAMESPACE=monitoring
 
-## install helm
-echo "Get Helm installed..."
-if [[ $((helm) 2>&1 | grep "command not found" ) ]]; then
-    echo "Installing Helm"
-    curl https://raw.githubusercontent.com/helm/helm/master/scripts/get > get_helm.sh
-    chmod 700 get_helm.sh
-    ./get_helm.sh
-    echo "creating service tiller account"
-    kubectl --namespace kube-system create sa tiller
-    kubectl create clusterrolebinding tiller \
-    --clusterrole cluster-admin \
-    --serviceaccount=kube-system:tiller
-    echo "initialize helm"
-    helm init --service-account tiller
-    helm repo update
-fi
-
 ## authenticate with GKE
 echo "Authenticating with GKE..."
 apt-get install -qq -y gettext
@@ -30,6 +13,25 @@ gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
 gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
 gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
 gcloud --quiet container clusters get-credentials ${GOOGLE_CLUSTER_NAME}
+
+## install helm
+echo "Get Helm installed..."
+if [[ $((helm) 2>&1 | grep "command not found" ) ]]; then
+    echo "Installing Helm"
+    curl https://raw.githubusercontent.com/helm/helm/master/scripts/get > get_helm.sh
+    chmod 700 get_helm.sh
+    ./get_helm.sh
+fi
+
+## init helm
+echo "creating service tiller account"
+kubectl --namespace kube-system create sa tiller
+kubectl create clusterrolebinding tiller \
+--clusterrole cluster-admin \
+--serviceaccount=kube-system:tiller
+echo "initialize helm"
+helm init --service-account tiller
+helm repo update
 
 ## install prometheus
 echo "Installing prometheus..."
