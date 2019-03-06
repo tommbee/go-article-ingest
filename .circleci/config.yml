@@ -1,8 +1,29 @@
 version: 2
-jobs:
-  build:
+
+references:
+
+  google_sdk_config: &google_sdk_config
     docker:
-       - image: google/cloud-sdk
+      - image: google/cloud-sdk
+
+  terraform_config: &terraform_config
+    docker:
+      - image: hashicorp/terraform:light
+    environment:
+      BASH_ENV: /root/.bashrc
+
+  terraform_init: &terraform_init
+    run:
+      name: terraform init
+      command: |
+        source $BASH_ENV
+        cd terraform
+        terraform init -input=false
+
+jobs:
+  ## Compile the app
+  build:
+    <<: *google_sdk_config
     steps:
       - checkout
       - run: chmod +x ./deployment/build.sh
@@ -11,6 +32,7 @@ jobs:
           root: .
           paths:
             - site-config
+  ## Push to the docker repo
   tag:
     machine: true
     steps:
@@ -21,6 +43,7 @@ jobs:
       - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
       - run: docker build --build-arg CONFIG_FILENAME=${CONFIG_FILENAME} -t $DOCKER_IMAGE_URL:$CIRCLE_SHA1 .
       - run: docker push $DOCKER_IMAGE_URL:$CIRCLE_SHA1
+  ## Run unit tests
   test:
     docker:
       - image: circleci/golang:1.8
@@ -31,14 +54,27 @@ jobs:
       - run: dep ensure
       - run: go get
       - run: go test
+  ## Provision cluster
+  provision:
+    <<: *terraform_config
+    steps:
+      - checkout
+      - *terraform_init
+      - run:
+          name: terraform apply
+          command: |
+            echo $GCLOUD_SERVICE_KEY > ./${GOOGLE_AUTH_FILE}
+            terraform apply -var "config_file=${GOOGLE_AUTH_FILE}" --auto-approve
+  ## Deploy the helm chart to k8s
   deploy:
-    docker:
-      - image: google/cloud-sdk
+    <<: *google_sdk_config
     steps:
       - checkout
       - run: chmod +x ./deployment/deploy.sh
       - run: bash ./deployment/deploy.sh
+
 workflows:
+
   version: 2
   untagged-build:
     jobs:
@@ -69,6 +105,9 @@ workflows:
           type: approval
           requires:
             - test
-      - deploy:
+      - provision:
           requires:
             - hold
+      - deploy:
+          requires:
+            - provision
