@@ -9,14 +9,11 @@ references:
   terraform_config: &terraform_config
     docker:
       - image: hashicorp/terraform:light
-    environment:
-      BASH_ENV: /root/.bashrc
 
   terraform_init: &terraform_init
     run:
       name: terraform init
       command: |
-        source $BASH_ENV
         cd terraform
         terraform init -input=false
 
