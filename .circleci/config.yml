@@ -60,8 +60,9 @@ jobs:
       - run:
           name: terraform apply
           command: |
-            echo $GCLOUD_SERVICE_KEY > ./${GOOGLE_AUTH_FILE}
-            terraform apply -var "config_file=${GOOGLE_AUTH_FILE}" --auto-approve
+            cd terraform
+            echo $GCLOUD_SERVICE_KEY > ./auth.json
+            terraform apply -var "config_file=auth.json" --auto-approve
   ## Deploy the helm chart to k8s
   deploy:
     <<: *google_sdk_config
