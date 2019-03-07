@@ -11,6 +11,7 @@ module "deploy" {
     client_key = "${base64decode(module.article-app.client_key)}"
     cluster_ca_certificate = "${base64decode(module.article-app.cluster_ca_certificate)}"
     host = "${module.article-app.host}"
+    token = "${module.article-app.token}"
 
     ## app specific
     image_repository = "${var.image_repository}"
