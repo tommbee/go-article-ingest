@@ -61,9 +61,9 @@ jobs:
           name: terraform plan
           command: |
             cd terraform
-            echo $GCLOUD_SERVICE_KEY > ./auth.json
+            echo $GCLOUD_SERVICE_KEY > ../auth.json
             terraform plan \
-            -var "config_file=auth.json" \
+            -var "config_file=../auth.json" \
             -var "image_repository=${DOCKER_IMAGE_URL}" \
             -var "image_tag=${CIRCLE_SHA1}" \
             -var "sources=${SOURCES}" \
@@ -81,6 +81,7 @@ jobs:
           root: .
           paths:
             - terraform.plan
+            - auth.json
   ## Deploy cluster and app
   deploy:
     <<: *terraform_config
