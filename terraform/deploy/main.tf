@@ -1,7 +1,9 @@
 provider "helm" {
   version = "~> 0.6"
+  service_account = "${kubernetes_service_account.tiller.metadata.0.name}"
 
   kubernetes {
+    host                   = "${var.host}"
     client_certificate     = "${var.client_certificate}"
     client_key             = "${var.client_key}"
     cluster_ca_certificate = "${var.cluster_ca_certificate}"
@@ -9,6 +11,7 @@ provider "helm" {
 }
 
 provider "kubernetes" {
+  host                   = "${var.host}"
   client_certificate     = "${var.client_certificate}"
   client_key             = "${var.client_key}"
   cluster_ca_certificate = "${var.cluster_ca_certificate}"
@@ -41,52 +44,53 @@ resource "kubernetes_cluster_role_binding" "tiller" {
 }
 
 resource "helm_release" "article-ingest-k8s" {
-  name      = "article-ingest-k8s"
-  chart     = "../../article-ingest-k8s"
-  namespace = "${var.namespace}"
+    depends_on = ["kubernetes_service_account.tiller"]
+    name      = "article-ingest-k8s"
+    chart     = "../../article-ingest-k8s"
+    namespace = "${var.namespace}"
 
-  set {
-      name  = "image.repository"
-      value = "${var.image_repository}"
-  }
-  set {
-      name  = "image.tag"
-      value = "${var.image_tag}"
-  }
-  set {
-      name  = "sources"
-      value = "${var.sources}"
-  }
-  set {
-      name  = "server"
-      value = "${var.server}"
-  }
-  set {
-      name  = "db"
-      value = "${var.db}"
-  }
-  set {
-      name  = "configFileLocation"
-      value = "${var.config_file_location}"
-  }
-  set {
-      name  = "articleCollection"
-      value = "${var.article_collection}"
-  }
-  set {
-      name  = "dbUser"
-      value = "${var.db_user}"
-  }
-  set {
-      name  = "dbPassword"
-      value = "${var.db_password}"
-  }
-  set {
-      name  = "authDb"
-      value = "${var.auth_db}"
-  }
-  set {
-      name  = "dbSsl"
-      value = "${var.db_ssl}"
-  }
+    set {
+        name  = "image.repository"
+        value = "${var.image_repository}"
+    }
+    set {
+        name  = "image.tag"
+        value = "${var.image_tag}"
+    }
+    set {
+        name  = "sources"
+        value = "${var.sources}"
+    }
+    set {
+        name  = "server"
+        value = "${var.server}"
+    }
+    set {
+        name  = "db"
+        value = "${var.db}"
+    }
+    set {
+        name  = "configFileLocation"
+        value = "${var.config_file_location}"
+    }
+    set {
+        name  = "articleCollection"
+        value = "${var.article_collection}"
+    }
+    set {
+        name  = "dbUser"
+        value = "${var.db_user}"
+    }
+    set {
+        name  = "dbPassword"
+        value = "${var.db_password}"
+    }
+    set {
+        name  = "authDb"
+        value = "${var.auth_db}"
+    }
+    set {
+        name  = "dbSsl"
+        value = "${var.db_ssl}"
+    }
 }
