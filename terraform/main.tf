@@ -7,8 +7,8 @@ module "article-app" {
 module "deploy" {
     source = "./deploy"
 
-    client_certificate = "${module.article-app.client_certificate}"
-    client_key = "${module.article-app.client_key}"
+    client_certificate = "${base64decode(module.article-app.client_certificate)}"
+    client_key = "${base64decode(module.article-app.client_key)}"
     cluster_ca_certificate = "${base64decode(module.article-app.cluster_ca_certificate)}"
 
     ## app specific
