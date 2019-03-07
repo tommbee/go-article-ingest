@@ -69,7 +69,7 @@ jobs:
             -var "sources=${SOURCES}" \
             -var "server=${SERVER}" \
             -var "db=${DB}" \
-            -var "config_file_location="${CONFIG_LOCATION}" \
+            -var "config_file_location=${CONFIG_LOCATION}" \
             -var "article_collection=${ARTICLE_COLLECTION}" \
             -var "db_user=${DB_USER}" \
             -var "db_password=${DB_PASSWORD}" \
@@ -101,7 +101,7 @@ jobs:
             -var "sources=${SOURCES}" \
             -var "server=${SERVER}" \
             -var "db=${DB}" \
-            -var "config_file_location="${CONFIG_LOCATION}" \
+            -var "config_file_location=${CONFIG_LOCATION}" \
             -var "article_collection=${ARTICLE_COLLECTION}" \
             -var "db_user=${DB_USER}" \
             -var "db_password=${DB_PASSWORD}" \
