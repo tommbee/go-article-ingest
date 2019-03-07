@@ -61,7 +61,22 @@ jobs:
           name: terraform plan
           command: |
             cd terraform
-            terraform plan -var "config_file=auth.json" -out=../terraform.plan
+            echo $GCLOUD_SERVICE_KEY > ./auth.json
+            terraform plan \
+            -var "config_file=auth.json" \
+            -var "image_repository=${DOCKER_IMAGE_URL}" \
+            -var "image_tag=${CIRCLE_SHA1}" \
+            -var "sources=${SOURCES}" \
+            -var "server=${SERVER}" \
+            -var "db=${DB}" \
+            -var "config_file_location="${CONFIG_LOCATION}" \
+            -var "article_collection=${ARTICLE_COLLECTION}" \
+            -var "db_user=${DB_USER}" \
+            -var "db_password=${DB_PASSWORD}" \
+            -var "auth_db=${AUTH_DB}" \
+            -var "db_ssl=${DB_SSL}" \
+            -var "namespace=${NAMESPACE}" \
+            -out=../terraform.plan
       - persist_to_workspace:
           root: .
           paths:
@@ -79,7 +94,21 @@ jobs:
           command: |
             cd terraform
             echo $GCLOUD_SERVICE_KEY > ./auth.json
-            terraform apply -var "config_file=auth.json" --auto-approve ../terraform.plan
+            terraform apply \
+            -var "config_file=auth.json" \
+            -var "image_repository=${DOCKER_IMAGE_URL}" \
+            -var "image_tag=${CIRCLE_SHA1}" \
+            -var "sources=${SOURCES}" \
+            -var "server=${SERVER}" \
+            -var "db=${DB}" \
+            -var "config_file_location="${CONFIG_LOCATION}" \
+            -var "article_collection=${ARTICLE_COLLECTION}" \
+            -var "db_user=${DB_USER}" \
+            -var "db_password=${DB_PASSWORD}" \
+            -var "auth_db=${AUTH_DB}" \
+            -var "db_ssl=${DB_SSL}" \
+            -var "namespace=${NAMESPACE}" \
+            --auto-approve ../terraform.plan
 
 workflows:
 
