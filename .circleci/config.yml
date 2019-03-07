@@ -58,18 +58,28 @@ jobs:
       - checkout
       - *terraform_init
       - run:
+          name: terraform plan
+          command: |
+            cd terraform
+            terraform plan -var "config_file=auth.json" -out=../terraform.plan
+      - persist_to_workspace:
+          root: .
+          paths:
+            - terraform.plan
+  ## Deploy cluster and app
+  deploy:
+    <<: *terraform_config
+    steps:
+      - checkout
+      - *terraform_init
+      - attach_workspace:
+          at: .
+      - run:
           name: terraform apply
           command: |
             cd terraform
             echo $GCLOUD_SERVICE_KEY > ./auth.json
-            terraform apply -var "config_file=auth.json" --auto-approve
-  ## Deploy the helm chart to k8s
-  deploy:
-    <<: *google_sdk_config
-    steps:
-      - checkout
-      - run: chmod +x ./deployment/deploy.sh
-      - run: bash ./deployment/deploy.sh
+            terraform apply -var "config_file=auth.json" --auto-approve ../terraform.plan
 
 workflows:
 

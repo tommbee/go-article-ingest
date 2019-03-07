@@ -6,13 +6,13 @@ export NAMESPACE=article-app
 export MONITORING_NAMESPACE=monitoring
 
 ## authenticate with GKE
-echo "Authenticating with GKE..."
-apt-get install -qq -y gettext
-echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
-gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
-gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
-gcloud --quiet container clusters get-credentials ${GOOGLE_CLUSTER_NAME}
+# echo "Authenticating with GKE..."
+# apt-get install -qq -y gettext
+# echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
+# gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+# gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+# gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+# gcloud --quiet container clusters get-credentials ${GOOGLE_CLUSTER_NAME}
 
 ## install helm
 echo "Get Helm installed..."
@@ -35,14 +35,14 @@ helm init --upgrade --service-account tiller
 helm repo update
 
 ## install prometheus
-echo "Installing prometheus..."
-kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/alertmanager.crd.yaml
-kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/prometheus.crd.yaml
-kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/prometheusrule.crd.yaml
-kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/servicemonitor.crd.yaml
-helm repo add coreos https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
-helm install --name prometheus-operator --namespace ${MONITORING_NAMESPACE} stable/prometheus-operator --set prometheusOperator.createCustomResource=false
-helm install --name kube-prometheus --namespace ${MONITORING_NAMESPACE} coreos/kube-prometheus --set global.rbacEnable=true
+# echo "Installing prometheus..."
+# kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/alertmanager.crd.yaml
+# kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/prometheus.crd.yaml
+# kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/prometheusrule.crd.yaml
+# kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/servicemonitor.crd.yaml
+# helm repo add coreos https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
+# helm install --name prometheus-operator --namespace ${MONITORING_NAMESPACE} stable/prometheus-operator --set prometheusOperator.createCustomResource=false
+# helm install --name kube-prometheus --namespace ${MONITORING_NAMESPACE} coreos/kube-prometheus --set global.rbacEnable=true
 
 ## create namespace
 echo "Creating app namespace..."
