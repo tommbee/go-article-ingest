@@ -62,7 +62,7 @@ jobs:
           command: |
             cd terraform
             echo $GCLOUD_SERVICE_KEY > ../auth.json
-            terraform plan \
+            terraform plan -refresh=false \
             -var "config_file=../auth.json" \
             -var "image_repository=${DOCKER_IMAGE_URL}" \
             -var "image_tag=${CIRCLE_SHA1}" \
