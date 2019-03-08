@@ -2,9 +2,9 @@ terraform {
   backend "gcs" {
     bucket = "article-app-storage"
     prefix = "terraform/state"
-    credentials = "../auth.json"
   }
 }
+
 module "article-app" {
   source = "git@github.com:tommbee/article-app-terraform.git"
 

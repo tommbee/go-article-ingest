@@ -14,8 +14,8 @@ references:
     run:
       name: terraform init
       command: |
-        cd terraform
-        terraform init -input=false
+        echo $GCLOUD_SERVICE_KEY > auth.json
+        terraform init -input=false -backend-config="credentials=auth.json" terraform
 
 jobs:
   ## Compile the app
@@ -61,7 +61,7 @@ jobs:
           name: terraform plan
           command: |
             cd terraform
-            echo $GCLOUD_SERVICE_KEY > ../auth.json
+            #echo $GCLOUD_SERVICE_KEY > ../auth.json
             terraform plan \
             -var "config_file=../auth.json" \
             -var "image_repository=${DOCKER_IMAGE_URL}" \
