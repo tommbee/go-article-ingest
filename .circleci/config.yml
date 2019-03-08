@@ -14,8 +14,10 @@ references:
     run:
       name: terraform init
       command: |
+        cd terraform
         echo $GCLOUD_SERVICE_KEY > auth.json
-        terraform init -input=false -backend-config="credentials=auth.json" terraform
+        terraform init -input=false -backend-config="credentials=auth.json"
+        #terraform init -input=false
 
 jobs:
   ## Compile the app
@@ -60,10 +62,12 @@ jobs:
       - run:
           name: terraform plan
           command: |
+            ls
             cd terraform
-            echo $GCLOUD_SERVICE_KEY > ../auth.json
+            ls
+            echo $GCLOUD_SERVICE_KEY > auth.json
             terraform plan \
-            -var "config_file=../auth.json" \
+            -var "config_file=auth.json" \
             -var "image_repository=${DOCKER_IMAGE_URL}" \
             -var "image_tag=${CIRCLE_SHA1}" \
             -var "sources=${SOURCES}" \
@@ -93,7 +97,8 @@ jobs:
       - run:
           name: terraform apply
           command: |
-            terraform apply --auto-approve ../terraform.plan terraform
+            cd terraform
+            terraform apply --auto-approve ../terraform.plan
 
 workflows:
 
