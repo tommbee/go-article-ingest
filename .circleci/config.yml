@@ -61,7 +61,7 @@ jobs:
           name: terraform plan
           command: |
             cd terraform
-            #echo $GCLOUD_SERVICE_KEY > ../auth.json
+            echo $GCLOUD_SERVICE_KEY > ../auth.json
             terraform plan \
             -var "config_file=../auth.json" \
             -var "image_repository=${DOCKER_IMAGE_URL}" \
@@ -93,8 +93,7 @@ jobs:
       - run:
           name: terraform apply
           command: |
-            cd terraform
-            terraform apply --auto-approve ../terraform.plan
+            terraform apply --auto-approve ../terraform.plan terraform
 
 workflows:
 
