@@ -123,11 +123,11 @@ workflows:
             - build
       - test:
           requires:
-            - tag
+            - build
       - hold:
           type: approval
           requires:
-            - test
+            - tag
       - provision:
           requires:
             - hold
