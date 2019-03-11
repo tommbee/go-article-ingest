@@ -44,7 +44,7 @@
 # }
 
 resource "helm_release" "article-ingest-k8s" {
-    depends_on = ["kubernetes_service_account.tiller"]
+    #depends_on = ["kubernetes_service_account.tiller"]
     name      = "article-ingest-k8s"
     chart     = "../article-ingest-k8s"
     namespace = "${var.namespace}"
