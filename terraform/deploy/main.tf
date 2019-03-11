@@ -47,16 +47,6 @@ resource "kubernetes_cluster_role_binding" "tiller" {
   }
 }
 
-resource "helm_release" "prometheus_operator" {
-  name  = "monitoring"
-  chart = "stable/prometheus-operator"
-  namespace = "monitoring"
-
-  values = [
-    "${file("${path.module}/monitoring/prometheus.yml")}",
-  ]
-}
-
 resource "helm_release" "article-ingest-k8s" {
     depends_on = ["kubernetes_service_account.tiller"]
     name      = "article-ingest-k8s"
