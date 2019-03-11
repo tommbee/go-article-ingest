@@ -63,6 +63,7 @@ jobs:
           name: terraform plan
           command: |
             cd terraform
+            export TF_LOG=TRACE
             echo $GCLOUD_SERVICE_KEY > auth.json
             terraform plan \
             -var "config_file=auth.json" \
