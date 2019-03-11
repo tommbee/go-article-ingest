@@ -50,6 +50,7 @@ resource "kubernetes_cluster_role_binding" "tiller" {
 resource "helm_release" "prometheus_operator" {
   name  = "monitoring"
   chart = "stable/prometheus-operator"
+  namespace = "monitoring"
 
   values = [
     "${file("${path.module}/monitoring/prometheus.yml")}",
