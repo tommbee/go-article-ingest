@@ -19,6 +19,7 @@ module "deploy" {
     cluster_ca_certificate = "${base64decode(module.article-app.cluster_ca_certificate)}"
     host = "${module.article-app.host}"
     token = "${module.article-app.token}"
+    service_account_name = "${module.article-app.helm_service_account}"
 
     ## app specific
     image_repository = "${var.image_repository}"
