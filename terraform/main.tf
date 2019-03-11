@@ -9,7 +9,6 @@ module "article-app" {
   source = "git@github.com:tommbee/article-app-terraform.git"
 
   config_file = "${var.config_file}"
-  prometheus_overrides = "${var.prometheus_overrides}"
 }
 
 module "deploy" {

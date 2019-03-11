@@ -2,10 +2,6 @@ variable "config_file" {
   default="article-app-google-account-creds.json"
 }
 
-variable "prometheus_overrides" {
-  default="prometheus.yml"
-}
-
 ## app specific
 variable "image_repository" {}
 variable "image_tag" {}
