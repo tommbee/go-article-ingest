@@ -79,7 +79,6 @@ jobs:
             -var "db_ssl=${DB_SSL}" \
             -var "namespace=${NAMESPACE}" \
             -out=../terraform.plan
-            cd /root/project && ls
       - persist_to_workspace:
           root: .
           paths:
@@ -96,6 +95,9 @@ jobs:
       - run:
           name: terraform apply
           command: |
+            chmod +x ./deployment/get-helm.sh
+            bash ./deployment/get-helm.sh
+            helm init --client-only
             cd terraform
             terraform apply --auto-approve ../terraform.plan
 
