@@ -1,7 +1,7 @@
 provider "helm" {
   version = "~> 0.6"
   service_account = "${var.service_account_name}}"
-  depends_on = "${var.sa_name}}"
+  depends_on = "${var.service_account_name}}"
 
   kubernetes {
     #client_certificate     = "${var.client_certificate}"
