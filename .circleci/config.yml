@@ -62,6 +62,7 @@ jobs:
       - run:
           name: terraform plan
           command: |
+            cd /root && ls
             cd terraform
             echo $GCLOUD_SERVICE_KEY > auth.json
             terraform plan \
