@@ -16,9 +16,9 @@ module "article-app-cluster" {
 module "deploy" {
     source = "./deploy"
 
-    client_certificate = "${base64decode(module.article-app-cluster.client_certificate)}"
-    client_key = "${base64decode(module.article-app-cluster.client_key)}"
-    cluster_ca_certificate = "${base64decode(module.article-app-cluster.cluster_ca_certificate)}"
+    client_certificate = "${module.article-app-cluster.client_certificate}"
+    client_key = "${module.article-app-cluster.client_key}"
+    cluster_ca_certificate = "${module.article-app-cluster.cluster_ca_certificate}"
     host = "${module.article-app-cluster.host}"
     service_account_name = "${module.article-app-cluster.service_account}"
     #token = "${module.article-app-cluster.token}"
