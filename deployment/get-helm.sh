@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export HELM_HOME=/home/circleci/project/.helm
+
 ## install helm
 echo "Check Helm is installed..."
 if [[ $((helm) 2>&1 | grep "command not found" ) ]]; then
