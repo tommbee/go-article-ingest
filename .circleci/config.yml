@@ -64,6 +64,7 @@ jobs:
           command: |
             mkdir .helm-home
             export HELM_HOME="./.helm-home"
+            helm init --client-only
             cd terraform
             echo $GCLOUD_SERVICE_KEY > auth.json
             terraform plan \
