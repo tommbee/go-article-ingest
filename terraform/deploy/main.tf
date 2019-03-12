@@ -1,16 +1,17 @@
-provider "helm" {
-  version = "~> 0.6"
-  service_account = "${var.service_account_name}}"
-  depends_on = "${var.service_account_name}}"
+# provider "helm" {
+#   version = "~> 0.6"
+#   namespace = "kube-system"
+#   service_account = "${var.service_account_name}}"
+#   override = ["spec.template.spec.automountserviceaccounttoken=true"]
 
-  kubernetes {
-    #client_certificate     = "${var.client_certificate}"
-    #client_key             = "${var.client_key}"
-    cluster_ca_certificate = "${var.cluster_ca_certificate}"
-    host                   = "${var.host}"
-    token                  = "${var.token}"
-  }
-}
+#   kubernetes {
+#     #client_certificate     = "${var.client_certificate}"
+#     #client_key             = "${var.client_key}"
+#     cluster_ca_certificate = "${var.cluster_ca_certificate}"
+#     host                   = "${var.host}"
+#     token                  = "${var.token}"
+#   }
+# }
 
 # provider "kubernetes" {
 #   host                   = "${var.host}"
@@ -46,54 +47,54 @@ provider "helm" {
 #   }
 # }
 
-resource "helm_release" "article-ingest-k8s" {
-    #depends_on = ["kubernetes_service_account.tiller"]
-    name      = "article-ingest-k8s"
-    chart     = "../article-ingest-k8s"
-    namespace = "${var.namespace}"
+# resource "helm_release" "article-ingest-k8s" {
+#     #depends_on = ["kubernetes_service_account.tiller"]
+#     name      = "article-ingest-k8s"
+#     chart     = "../article-ingest-k8s"
+#     namespace = "${var.namespace}"
 
-    set {
-        name  = "image.repository"
-        value = "${var.image_repository}"
-    }
-    set {
-        name  = "image.tag"
-        value = "${var.image_tag}"
-    }
-    set {
-        name  = "sources"
-        value = "${var.sources}"
-    }
-    set {
-        name  = "server"
-        value = "${var.server}"
-    }
-    set {
-        name  = "db"
-        value = "${var.db}"
-    }
-    set {
-        name  = "configFileLocation"
-        value = "${var.config_file_location}"
-    }
-    set {
-        name  = "articleCollection"
-        value = "${var.article_collection}"
-    }
-    set {
-        name  = "dbUser"
-        value = "${var.db_user}"
-    }
-    set {
-        name  = "dbPassword"
-        value = "${var.db_password}"
-    }
-    set {
-        name  = "authDb"
-        value = "${var.auth_db}"
-    }
-    set {
-        name  = "dbSsl"
-        value = "${var.db_ssl}"
-    }
-}
+#     set {
+#         name  = "image.repository"
+#         value = "${var.image_repository}"
+#     }
+#     set {
+#         name  = "image.tag"
+#         value = "${var.image_tag}"
+#     }
+#     set {
+#         name  = "sources"
+#         value = "${var.sources}"
+#     }
+#     set {
+#         name  = "server"
+#         value = "${var.server}"
+#     }
+#     set {
+#         name  = "db"
+#         value = "${var.db}"
+#     }
+#     set {
+#         name  = "configFileLocation"
+#         value = "${var.config_file_location}"
+#     }
+#     set {
+#         name  = "articleCollection"
+#         value = "${var.article_collection}"
+#     }
+#     set {
+#         name  = "dbUser"
+#         value = "${var.db_user}"
+#     }
+#     set {
+#         name  = "dbPassword"
+#         value = "${var.db_password}"
+#     }
+#     set {
+#         name  = "authDb"
+#         value = "${var.auth_db}"
+#     }
+#     set {
+#         name  = "dbSsl"
+#         value = "${var.db_ssl}"
+#     }
+# }
