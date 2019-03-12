@@ -3,3 +3,4 @@ vendor
 .terraform
 article-app-google-account-creds.json
 local-deploy.sh
+auth.json
