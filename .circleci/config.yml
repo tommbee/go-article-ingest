@@ -79,7 +79,7 @@ jobs:
             -var "db_ssl=${DB_SSL}" \
             -var "namespace=${NAMESPACE}" \
             -out=../terraform.plan
-            cd /root && ls
+            cd /root/project && ls
       - persist_to_workspace:
           root: .
           paths:
