@@ -5,22 +5,23 @@ terraform {
   }
 }
 
-module "article-app" {
-  source = "git@github.com:tommbee/article-app-terraform.git"
+module "article-app-cluster" {
+  source = "git@github.com:tommbee/k8s-prometheus-terraform-module.git"
 
   config_file = "${var.config_file}"
+  region = "europe-west1-c"
+  projet_name = "temporal-parser-229715"
 }
 
 module "deploy" {
     source = "./deploy"
 
-    client_certificate = "${base64decode(module.article-app.client_certificate)}"
-    client_key = "${base64decode(module.article-app.client_key)}"
-    cluster_ca_certificate = "${base64decode(module.article-app.cluster_ca_certificate)}"
-    host = "${module.article-app.host}"
-    service_account_name = "${module.article-app.service_account}"
-    #token = "${module.article-app.token}"
-    #service_account_name = "${module.article-app.helm_service_account}"
+    client_certificate = "${base64decode(module.article-app-cluster.client_certificate)}"
+    client_key = "${base64decode(module.article-app-cluster.client_key)}"
+    cluster_ca_certificate = "${base64decode(module.article-app-cluster.cluster_ca_certificate)}"
+    host = "${module.article-app-cluster.host}"
+    service_account_name = "${module.article-app-cluster.service_account}"
+    #token = "${module.article-app-cluster.token}"
 
     ## app specific
     image_repository = "${var.image_repository}"
