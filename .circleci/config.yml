@@ -47,7 +47,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - ./.helm
+            - .helm/*
   ## Run unit tests
   test:
     docker:
@@ -91,7 +91,7 @@ jobs:
           paths:
             - terraform.plan
             - auth.json
-            - ./.helm
+            - .helm/*
   ## Deploy cluster and app
   deploy:
     <<: *terraform_config
