@@ -1,13 +1,14 @@
-# provider "helm" {
-#   version = "~> 0.6"
-#   service_account = "${var.service_account_name}"
+provider "helm" {
+  version = "~> 0.6"
+  service_account = "${var.service_account_name}}"
 
-#   kubernetes {
-#     host                   = "${var.host}"
-#     token                  = "${var.token}"
-#     cluster_ca_certificate = "${var.cluster_ca_certificate}"
-#   }
-# }
+  kubernetes {
+    client_certificate     = "${var.client_certificate}"
+    client_key             = "${var.client_key}"
+    cluster_ca_certificate = "${var.cluster_ca_certificate}"
+    host                   = "${var.host}"
+  }
+}
 
 # provider "kubernetes" {
 #   host                   = "${var.host}"
