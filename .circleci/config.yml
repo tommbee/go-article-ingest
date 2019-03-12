@@ -38,10 +38,16 @@ jobs:
       - checkout
       - attach_workspace:          
           at: . 
+      - run: chmod +x ./deployment/get-helm.sh
+      - run: bash ./deployment/get-helm.sh
       - run: cp site-config/${CONFIG_FILENAME} ./${CONFIG_FILENAME}
       - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
       - run: docker build --build-arg CONFIG_FILENAME=${CONFIG_FILENAME} -t $DOCKER_IMAGE_URL:$CIRCLE_SHA1 .
       - run: docker push $DOCKER_IMAGE_URL:$CIRCLE_SHA1
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./.helm
   ## Run unit tests
   test:
     docker:
@@ -53,6 +59,10 @@ jobs:
       - run: dep ensure
       - run: go get
       - run: go test
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./.helm
   ## Provision cluster
   provision:
     <<: *terraform_config
@@ -84,6 +94,7 @@ jobs:
           paths:
             - terraform.plan
             - auth.json
+            - ./.helm
   ## Deploy cluster and app
   deploy:
     <<: *terraform_config
@@ -95,10 +106,7 @@ jobs:
       - run:
           name: terraform apply
           command: |
-            chmod +x ./deployment/get-helm.sh
-            cd deployment && ls
-            ./deployment/get-helm.sh
-            helm init --client-only
+            export HELM_HOME=/root/project/.helm
             cd terraform
             terraform apply --auto-approve ../terraform.plan
 
