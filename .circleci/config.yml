@@ -96,6 +96,7 @@ jobs:
           name: terraform apply
           command: |
             chmod +x ./deployment/get-helm.sh
+            cd deployment && ls
             ./deployment/get-helm.sh
             helm init --client-only
             cd terraform
