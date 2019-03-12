@@ -13,6 +13,7 @@ module "article-app-cluster" {
   projet_name = "temporal-parser-229715"
 }
 
+
 # module "deploy" {
 #     source = "./deploy"
 
