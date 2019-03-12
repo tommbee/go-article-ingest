@@ -96,7 +96,7 @@ jobs:
           name: terraform apply
           command: |
             chmod +x ./deployment/get-helm.sh
-            bash ./deployment/get-helm.sh
+            ./deployment/get-helm.sh
             helm init --client-only
             cd terraform
             terraform apply --auto-approve ../terraform.plan
