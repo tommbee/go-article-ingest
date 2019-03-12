@@ -5,13 +5,13 @@ terraform {
   }
 }
 
-# module "article-app-cluster" {
-#   source = "git@github.com:tommbee/k8s-prometheus-terraform-module.git"
+module "article-app-cluster" {
+  source = "git@github.com:tommbee/k8s-prometheus-terraform-module.git"
 
-#   config_file = "${var.config_file}"
-#   region = "europe-west1-c"
-#   projet_name = "temporal-parser-229715"
-# }
+  config_file = "${var.config_file}"
+  region = "europe-west1-c"
+  projet_name = "temporal-parser-229715"
+}
 
 # module "deploy" {
 #     source = "./deploy"
@@ -38,47 +38,50 @@ terraform {
 #     namespace = "${var.namespace}"
 # }
 
-variable "projet_name" {
-    default = "temporal-parser-229715"
-}
-variable "region" {
-  default = "europe-west1-c"
-}
+#### new here
 
-provider "google" {
-  credentials = "${file("${var.config_file}")}"
-  project = "${var.projet_name}"
-}
 
-data "google_client_config" "current" {}
+# variable "projet_name" {
+#     default = "temporal-parser-229715"
+# }
+# variable "region" {
+#   default = "europe-west1-c"
+# }
 
-resource "google_container_cluster" "default" {
-  name = "${var.projet_name}-initial-primary"
+# provider "google" {
+#   credentials = "${file("${var.config_file}")}"
+#   project = "${var.projet_name}"
+# }
 
-  zone = "${var.region}"
-  initial_node_count = 2
+# data "google_client_config" "current" {}
 
-  min_master_version = 1.11
-  node_version = 1.11
+# resource "google_container_cluster" "default" {
+#   name = "${var.projet_name}-initial-primary"
 
-  node_config {
-    machine_type = "n1-standard-2"
+#   zone = "${var.region}"
+#   initial_node_count = 2
 
-    oauth_scopes = [
-      "https://www.googleapis.com/auth/compute",
-      "https://www.googleapis.com/auth/devstorage.read_only",
-      "https://www.googleapis.com/auth/logging.write",
-      "https://www.googleapis.com/auth/monitoring",
-    ]
-  }
-}
+#   min_master_version = 1.11
+#   node_version = 1.11
+
+#   node_config {
+#     machine_type = "n1-standard-2"
+
+#     oauth_scopes = [
+#       "https://www.googleapis.com/auth/compute",
+#       "https://www.googleapis.com/auth/devstorage.read_only",
+#       "https://www.googleapis.com/auth/logging.write",
+#       "https://www.googleapis.com/auth/monitoring",
+#     ]
+#   }
+# }
 
 provider "kubernetes" {
-  #client_certificate     = "${var.client_certificate}"
-  #client_key             = "${var.client_key}"
-  cluster_ca_certificate = "${base64decode(google_container_cluster.default.master_auth.0.cluster_ca_certificate)}"
-  host                   = "${google_container_cluster.default.endpoint}"
-  token                  = "${data.google_client_config.current.access_token}"
+  #client_certificate = "${module.article-app-cluster.client_certificate}"
+  #client_key = "${module.article-app-cluster.client_key}"
+  cluster_ca_certificate = "${module.article-app-cluster.cluster_ca_certificate}"
+  host = "${module.article-app-cluster.host}"
+  token = "${module.article-app-cluster.token}"
 
   load_config_file = false
 }
