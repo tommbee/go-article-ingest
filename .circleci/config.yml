@@ -62,6 +62,8 @@ jobs:
       - run:
           name: terraform plan
           command: |
+            mkdir .helm-home
+            export HELM_HOME="./.helm-home"
             cd terraform
             echo $GCLOUD_SERVICE_KEY > auth.json
             terraform plan \
@@ -84,6 +86,7 @@ jobs:
           paths:
             - terraform.plan
             - auth.json
+            - ./.helm-home
   ## Deploy cluster and app
   deploy:
     <<: *terraform_config
@@ -95,6 +98,7 @@ jobs:
       - run:
           name: terraform apply
           command: |
+            export HELM_HOME="./.helm-home"
             cd terraform
             terraform apply --auto-approve ../terraform.plan
 
