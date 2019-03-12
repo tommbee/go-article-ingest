@@ -62,7 +62,6 @@ jobs:
       - run:
           name: terraform plan
           command: |
-            cd /root && ls
             cd terraform
             echo $GCLOUD_SERVICE_KEY > auth.json
             terraform plan \
@@ -80,6 +79,7 @@ jobs:
             -var "db_ssl=${DB_SSL}" \
             -var "namespace=${NAMESPACE}" \
             -out=../terraform.plan
+            cd /root && ls
       - persist_to_workspace:
           root: .
           paths:
