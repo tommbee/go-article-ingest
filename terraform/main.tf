@@ -21,7 +21,7 @@ module "deploy" {
     cluster_ca_certificate = "${module.article-app-cluster.cluster_ca_certificate}"
     host = "${module.article-app-cluster.host}"
     service_account_name = "${module.article-app-cluster.service_account}"
-    #token = "${module.article-app-cluster.token}"
+    token = "${module.article-app-cluster.token}"
 
     ## app specific
     image_repository = "${var.image_repository}"

@@ -3,6 +3,7 @@ variable "client_key" {}
 variable "cluster_ca_certificate" {}
 variable "host" {}
 variable "service_account_name" {}
+variable "token" {}
 
 ## app specific
 variable "image_repository" {}
