@@ -39,7 +39,7 @@ jobs:
       - attach_workspace:          
           at: . 
       - run: chmod +x ./deployment/get-helm.sh
-      - run: bash ./deployment/get-helm.sh && ls
+      - run: bash ./deployment/get-helm.sh && ls -a
       - run: cp site-config/${CONFIG_FILENAME} ./${CONFIG_FILENAME}
       - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
       - run: docker build --build-arg CONFIG_FILENAME=${CONFIG_FILENAME} -t $DOCKER_IMAGE_URL:$CIRCLE_SHA1 .
@@ -68,7 +68,7 @@ jobs:
       - run:
           name: terraform plan
           command: |
-            ls
+            ls -a
             export HELM_HOME=/root/project/.helm
             cd terraform
             echo $GCLOUD_SERVICE_KEY > auth.json
@@ -104,7 +104,7 @@ jobs:
       - run:
           name: terraform apply
           command: |
-            ls
+            ls -a
             export HELM_HOME=/root/project/.helm
             cd terraform
             terraform apply --auto-approve ../terraform.plan
