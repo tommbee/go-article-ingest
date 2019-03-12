@@ -62,7 +62,6 @@ jobs:
       - run:
           name: terraform plan
           command: |
-            ls
             cd terraform
             echo $GCLOUD_SERVICE_KEY > auth.json
             terraform plan \
@@ -85,7 +84,6 @@ jobs:
           paths:
             - terraform.plan
             - auth.json
-            - ./.helm
   ## Deploy cluster and app
   deploy:
     <<: *terraform_config
