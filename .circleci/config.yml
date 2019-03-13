@@ -62,9 +62,6 @@ jobs:
       - run:
           name: terraform plan
           command: |
-            mkdir ./.helm-home
-            export HELM_HOME=/root/project/.helm-home
-            ls -a
             cd terraform
             echo $GCLOUD_SERVICE_KEY > auth.json
             terraform plan \
@@ -87,7 +84,19 @@ jobs:
           paths:
             - terraform.plan
             - auth.json
-            - .helm-home/*
+  helm:
+    machine: true
+    steps:
+      - checkout
+      - run: mkdir ./helm-home
+      - run: export HELM_HOME=$(pwd)/helm-home
+      - run: echo $HELM_HOME
+      - run: chmod +x ./deployment/get-helm.sh
+      - run: bash ./deployment/get-helm.sh
+      - persist_to_workspace:
+          root: .
+          paths:
+            - helm-home/*
   ## Deploy cluster and app
   deploy:
     <<: *terraform_config
@@ -100,7 +109,8 @@ jobs:
           name: terraform apply
           command: |
             ls -a
-            export HELM_HOME=/root/project/.helm-home
+            export HELM_HOME=$(pwd)/helm-home
+            echo $HELM_HOME
             cd terraform
             terraform apply --auto-approve ../terraform.plan
 
@@ -140,6 +150,9 @@ workflows:
       - provision:
           requires:
             - hold
-      - deploy:
+      - helm:
           requires:
             - provision
+      - deploy:
+          requires:
+            - helm
