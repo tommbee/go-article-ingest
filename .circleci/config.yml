@@ -84,6 +84,7 @@ jobs:
           paths:
             - terraform.plan
             - auth.json
+  ## Init helm on the client
   helm:
     machine: true
     steps:
