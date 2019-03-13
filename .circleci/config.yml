@@ -117,6 +117,7 @@ jobs:
             echo $HELM_HOME
             cd terraform
             terraform apply --auto-approve ../terraform.plan
+            cd $HELM_HOME && ls -a
 
 workflows:
 
