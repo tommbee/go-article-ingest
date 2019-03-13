@@ -88,11 +88,14 @@ jobs:
     machine: true
     steps:
       - checkout
-      - run: mkdir ./helm-home
-      - run: export HELM_HOME=$(pwd)/helm-home
-      - run: echo $HELM_HOME
       - run: chmod +x ./deployment/get-helm.sh
-      - run: bash ./deployment/get-helm.sh
+      - run: 
+          name: helm init
+          command: |
+            mkdir ./helm-home
+            export HELM_HOME=$(pwd)/helm-home
+            echo $HELM_HOME
+            bash ./deployment/get-helm.sh
       - persist_to_workspace:
           root: .
           paths:
