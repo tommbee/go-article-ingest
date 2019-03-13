@@ -92,14 +92,14 @@ jobs:
       - run: 
           name: helm init
           command: |
-            mkdir ./helm-home
-            export HELM_HOME=$(pwd)/helm-home
-            echo $HELM_HOME
+            #mkdir ./helm-home
+            #export HELM_HOME=$(pwd)/helm-home
+            #echo $HELM_HOME
             bash ./deployment/get-helm.sh
       - persist_to_workspace:
           root: .
           paths:
-            - helm-home/*
+            - .helm/*
   ## Deploy cluster and app
   deploy:
     <<: *terraform_config
@@ -112,7 +112,7 @@ jobs:
           name: terraform apply
           command: |
             ls -a
-            export HELM_HOME=$(pwd)/helm-home
+            export HELM_HOME=$(pwd)/.helm
             echo $HELM_HOME
             cd terraform
             terraform apply --auto-approve ../terraform.plan
