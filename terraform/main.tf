@@ -23,6 +23,7 @@ module "deploy" {
     helm_service_account = "${module.article-app-cluster.helm_service_account}"
     helm_namespace = "${module.article-app-cluster.helm_namespace}"
     token = "${module.article-app-cluster.token}"
+    helm_init_id = "${module.article-app-cluster.helm_init_id}"
 
     ## app specific
     image_repository = "${var.image_repository}"

@@ -21,6 +21,7 @@ resource "null_resource" "depends_on_hack" {
   connection {
     service_account = "${var.helm_service_account}"
     namespace       = "${var.helm_namespace}"
+    helm_init_id       = "${var.helm_init_id}"
   }
 }
 

@@ -5,6 +5,7 @@ variable "host" {}
 variable "helm_service_account" {}
 variable "helm_namespace" {}
 variable "token" {}
+variable "helm_init_id" {}
 
 ## app specific
 variable "image_repository" {}
