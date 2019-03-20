@@ -149,9 +149,9 @@ workflows:
       - provision:
           requires:
             - hold
-      - helm:
-          requires:
-            - provision
+      # - helm:
+      #     requires:
+      #       - provision
       - deploy:
           requires:
-            - helm
+            - provision
