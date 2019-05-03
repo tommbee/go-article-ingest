@@ -84,20 +84,6 @@ jobs:
           paths:
             - terraform.plan
             - auth.json
-  ## Init helm on the client
-  helm:
-    machine: true
-    steps:
-      - checkout
-      - run: chmod +x ./deployment/get-helm.sh
-      - run: 
-          name: helm init
-          command: |
-            bash ./deployment/get-helm.sh
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .helm/*
   ## Deploy cluster and app
   deploy:
     <<: *terraform_config
@@ -149,9 +135,6 @@ workflows:
       - provision:
           requires:
             - hold
-      # - helm:
-      #     requires:
-      #       - provision
       - deploy:
           requires:
             - provision
