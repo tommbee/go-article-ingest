@@ -1,11 +1,11 @@
-variable "client_certificate" {}
-variable "client_key" {}
-variable "cluster_ca_certificate" {}
-variable "host" {}
+# variable "client_certificate" {}
+# variable "client_key" {}
+# variable "cluster_ca_certificate" {}
+# variable "host" {}
+# variable "token" {}
+variable "kubeconfig" {}
 variable "helm_service_account" {}
 variable "helm_namespace" {}
-variable "token" {}
-variable "helm_init_id" {}
 
 ## app specific
 variable "image_repository" {}

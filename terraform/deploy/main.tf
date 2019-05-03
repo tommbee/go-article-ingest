@@ -1,3 +1,9 @@
+resource "null_resource" "helm_init" {
+  provisioner "local-exec" {
+    command = "helm init --service-account ${var.helm_service_account} --wait --kubeconfig ${var.kubeconfig}"
+  }
+}
+
 provider "helm" {
   version = "~> 0.8.0"
   service_account = "${var.helm_service_account}"
@@ -6,23 +12,7 @@ provider "helm" {
   tiller_image    = "gcr.io/kubernetes-helm/tiller:v2.13.0"
 
   kubernetes {
-    #client_certificate     = "${var.client_certificate}"
-    #client_key             = "${var.client_key}"
-    cluster_ca_certificate = "${var.cluster_ca_certificate}"
-    host                   = "${var.host}"
-    token                  = "${var.token}"
-  }
-}
-
-resource "null_resource" "depends_on_hack" {
-  triggers {
-    version = "${timestamp()}"
-  }
-
-  connection {
-    service_account = "${var.helm_service_account}"
-    namespace       = "${var.helm_namespace}"
-    helm_init_id       = "${var.helm_init_id}"
+    config_path = "${var.kubeconfig}"
   }
 }
 
@@ -30,10 +20,7 @@ resource "helm_release" "article-ingest-k8s" {
     name      = "article-ingest-k8s"
     chart     = "../article-ingest-k8s"
     namespace = "${var.namespace}"
-
-    depends_on = [
-        "null_resource.depends_on_hack",
-    ]
+    depends_on = ["null_resource.helm_init"]
 
     set {
         name  = "image.repository"

@@ -1,9 +1,9 @@
-terraform {
-  backend "gcs" {
-    bucket = "article-app-storage"
-    prefix = "terraform/state"
-  }
-}
+# terraform {
+#   backend "gcs" {
+#     bucket = "article-app-storage"
+#     prefix = "terraform/state"
+#   }
+# }
 
 module "article-app-cluster" {
   source = "git@github.com:tommbee/k8s-prometheus-terraform-module.git"
@@ -11,19 +11,21 @@ module "article-app-cluster" {
   config_file = "${var.config_file}"
   region = "europe-west1-c"
   projet_name = "temporal-parser-229715"
+  cluster_name = "article-app"
+  machine_type = "n1-standard-2"
 }
 
 module "deploy" {
     source = "./deploy"
 
-    client_certificate = "${module.article-app-cluster.client_certificate}"
-    client_key = "${module.article-app-cluster.client_key}"
-    cluster_ca_certificate = "${module.article-app-cluster.cluster_ca_certificate}"
-    host = "${module.article-app-cluster.host}"
+    # client_certificate = "${module.article-app-cluster.client_certificate}"
+    # client_key = "${module.article-app-cluster.client_key}"
+    # cluster_ca_certificate = "${module.article-app-cluster.cluster_ca_certificate}"
+    # host = "${module.article-app-cluster.host}"
     helm_service_account = "${module.article-app-cluster.helm_service_account}"
     helm_namespace = "${module.article-app-cluster.helm_namespace}"
-    token = "${module.article-app-cluster.token}"
-    helm_init_id = "${module.article-app-cluster.helm_init_id}"
+    # token = "${module.article-app-cluster.token}"
+    kubeconfig = "${module.article-app-cluster.kubeconfig}"
 
     ## app specific
     image_repository = "${var.image_repository}"
