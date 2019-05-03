@@ -1,9 +1,3 @@
-resource "null_resource" "helm_init" {
-  provisioner "local-exec" {
-    command = "helm init --service-account ${var.helm_service_account} --wait --kubeconfig ${var.kubeconfig}"
-  }
-}
-
 provider "helm" {
   version = "~> 0.8.0"
   service_account = "${var.helm_service_account}"
@@ -20,7 +14,6 @@ resource "helm_release" "article-ingest-k8s" {
     name      = "article-ingest-k8s"
     chart     = "../article-ingest-k8s"
     namespace = "${var.namespace}"
-    depends_on = ["null_resource.helm_init"]
 
     set {
         name  = "image.repository"

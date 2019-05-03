@@ -2,10 +2,6 @@ version: 2
 
 references:
 
-  google_sdk_config: &google_sdk_config
-    docker:
-      - image: google/cloud-sdk
-
   terraform_config: &terraform_config
     docker:
       - image: hashicorp/terraform:light
@@ -17,12 +13,12 @@ references:
         cd terraform
         echo $GCLOUD_SERVICE_KEY > auth.json
         terraform init -input=false -backend-config="credentials=auth.json"
-        #terraform init -input=false
 
 jobs:
   ## Compile the app
   build:
-    <<: *google_sdk_config
+    docker:
+      - image: google/cloud-sdk
     steps:
       - checkout
       - run: chmod +x ./deployment/build.sh
