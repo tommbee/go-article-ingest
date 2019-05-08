@@ -5,22 +5,26 @@ terraform {
   }
 }
 
-module "article-app-cluster" {
-  source = "git@github.com:tommbee/k8s-prometheus-terraform-module.git"
+provider "google" {
+  credentials = "${file("${var.config_file}")}"
+}
 
-  config_file = "${var.config_file}"
-  region = "europe-west1-c"
-  projet_name = "temporal-parser-229715"
-  cluster_name = "article-app"
-  machine_type = "n1-standard-2"
+data "google_storage_bucket_object" "kubeconfig" {
+  name   = "kubeconfig"
+  bucket = "${var.gcs_bucket}"
+}
+
+resource "local_file" "kubeconfig" {
+    content     = "${data.google_storage_bucket_object.kubeconfig.content}"
+    filename = "${path.module}/kubeconfig"
 }
 
 module "deploy" {
     source = "./deploy"
 
-    helm_service_account = "${module.article-app-cluster.helm_service_account}"
-    helm_namespace = "${module.article-app-cluster.helm_namespace}"
-    kubeconfig = "${module.article-app-cluster.kubeconfig}"
+    helm_service_account = "${var.helm_service_account}"
+    helm_namespace = "${var.helm_namespace}"
+    kubeconfig = "${local_file.kubeconfig.path}"
 
     ## app specific
     image_repository = "${var.image_repository}"

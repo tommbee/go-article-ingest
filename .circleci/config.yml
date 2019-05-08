@@ -62,6 +62,9 @@ jobs:
             echo $GCLOUD_SERVICE_KEY > auth.json
             terraform plan \
             -var "config_file=auth.json" \
+            -var "helm_namespace=${HELM_NAMESPACE}" \
+            -var "helm_service_account=${HELM_ACCOUNT}" \
+            -var "gcs_bucket=${GCS_BUCKET}" \
             -var "image_repository=${DOCKER_IMAGE_URL}" \
             -var "image_tag=${CIRCLE_SHA1}" \
             -var "sources=${SOURCES}" \

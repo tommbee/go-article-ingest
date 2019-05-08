@@ -1,6 +1,9 @@
 variable "config_file" {
   default="article-app-google-account-creds.json"
 }
+variable "helm_namespace" {}
+variable "helm_service_account" {}
+variable "gcs_bucket" {}
 
 ## app specific
 variable "image_repository" {}
