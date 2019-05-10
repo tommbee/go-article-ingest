@@ -11,6 +11,8 @@ if [[ $((helm) 2>&1 | grep "command not found" ) ]]; then
     helm repo add coreos https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
 fi
 
+gcloud auth activate-service-account --key-file=auth.json
+
 ## create namespace
 # echo "Creating app namespace..."
 # kubectl apply -f ./article-ingest-k8s/namespace.yml
