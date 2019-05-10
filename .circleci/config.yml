@@ -34,6 +34,8 @@ jobs:
     working_directory: /go/src/github.com/tommbee/go-article-ingest
     steps:
       - checkout
+      - attach_workspace:          
+          at: . 
       - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
       - run: dep ensure
       - run: go get
@@ -46,6 +48,8 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
+      - run: cp site-config/${CONFIG_FILENAME} ./deployment/${CONFIG_FILENAME}
+      - run: cp site-config/${CONFIG_FILENAME} ./${CONFIG_FILENAME}
       - run: chmod +x ./deployment/deploy.sh
       - run: bash ./deployment/deploy.sh
 
