@@ -13,9 +13,7 @@
 
 pwd
 
-cp ./site-config/kubeconfig /root/.kube/config
-
-ls -a
+cat ./site-config/kubeconfig
 
 helm init --client-only --kubeconfig ./site-config/kubeconfig
 
