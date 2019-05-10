@@ -4,15 +4,12 @@
 echo "Check Helm is installed..."
 if [[ $((helm) 2>&1 | grep "command not found" ) ]]; then
     echo "Installing Helm"
-    curl https://raw.githubusercontent.com/helm/helm/v2.11.0/scripts/get > get_helm.sh
+    curl https://raw.githubusercontent.com/helm/helm/master/scripts/get > get_helm.sh
     chmod 700 get_helm.sh
     ./get_helm.sh
-    helm init --client-only --kubeconfig ./site-config/kubeconfig
+    helm init --upgrade --kubeconfig ./site-config/kubeconfig
     helm repo add coreos https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
 fi
-
-ls -a
-gcloud auth activate-service-account --key-file=auth.json
 
 ## create namespace
 # echo "Creating app namespace..."
