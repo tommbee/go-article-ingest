@@ -47,6 +47,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
+          at: . 
       - run: mkdir -p /usr/local/google-cloud-sdk
       - run: ln -s /usr/bin /usr/local/google-cloud-sdk/bin
       - run: chmod +x ./deployment/deploy.sh
