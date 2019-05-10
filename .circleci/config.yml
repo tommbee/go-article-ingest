@@ -2,18 +2,6 @@ version: 2
 
 references:
 
-  terraform_config: &terraform_config
-    docker:
-      - image: hashicorp/terraform:light
-
-  terraform_init: &terraform_init
-    run:
-      name: terraform init
-      command: |
-        cd terraform
-        echo $GCLOUD_SERVICE_KEY > auth.json
-        terraform init -input=false -backend-config="credentials=auth.json"
-
 jobs:
   ## Compile the app
   build:
@@ -27,6 +15,7 @@ jobs:
           root: .
           paths:
             - site-config
+            - kubeconfig
   ## Push to the docker repo
   tag:
     machine: true
@@ -49,54 +38,16 @@ jobs:
       - run: dep ensure
       - run: go get
       - run: go test
-  ## Provision cluster
-  provision:
-    <<: *terraform_config
-    steps:
-      - checkout
-      - *terraform_init
-      - run:
-          name: terraform plan
-          command: |
-            cd terraform
-            echo $GCLOUD_SERVICE_KEY > auth.json
-            terraform plan \
-            -var "config_file=auth.json" \
-            -var "helm_namespace=${HELM_NAMESPACE}" \
-            -var "helm_service_account=${HELM_ACCOUNT}" \
-            -var "gcs_bucket=${GCS_BUCKET}" \
-            -var "image_repository=${DOCKER_IMAGE_URL}" \
-            -var "image_tag=${CIRCLE_SHA1}" \
-            -var "sources=${SOURCES}" \
-            -var "server=${SERVER}" \
-            -var "db=${DB}" \
-            -var "config_file_location=${CONFIG_LOCATION}" \
-            -var "article_collection=${ARTICLE_COLLECTION}" \
-            -var "db_user=${DB_USER}" \
-            -var "db_password=${DB_PASSWORD}" \
-            -var "auth_db=${AUTH_DB}" \
-            -var "db_ssl=${DB_SSL}" \
-            -var "namespace=${NAMESPACE}" \
-            -out=../terraform.plan
-      - persist_to_workspace:
-          root: .
-          paths:
-            - terraform.plan
-            - auth.json
-  ## Deploy cluster and app
+  ## Deploy app to cluster using helm
   deploy:
-    <<: *terraform_config
+    docker:
+      - image: google/cloud-sdk
     steps:
       - checkout
-      - *terraform_init
       - attach_workspace:
           at: .
-      - run:
-          name: terraform apply
-          command: |
-            export HELM_HOME=$(pwd)/.helm
-            cd terraform
-            terraform apply --auto-approve ../terraform.plan
+      - run: chmod +x ./deployment/deploy.sh
+      - run: bash ./deployment/deploy.sh
 
 workflows:
 
@@ -131,9 +82,6 @@ workflows:
           requires:
             - tag
             - test
-      - provision:
-          requires:
-            - hold
       - deploy:
           requires:
-            - provision
+            - hold

@@ -1,9 +1,9 @@
-terraform {
-  backend "gcs" {
-    bucket = "article-app-storage"
-    prefix = "terraform/state"
-  }
-}
+# terraform {
+#   backend "gcs" {
+#     bucket = "article-app-storage"
+#     prefix = "terraform/state"
+#   }
+# }
 
 provider "google" {
   credentials = "${file("${var.config_file}")}"
@@ -15,8 +15,8 @@ data "google_storage_bucket_object" "kubeconfig" {
 }
 
 resource "local_file" "kubeconfig" {
-    content     = "${data.google_storage_bucket_object.kubeconfig.content}"
-    filename = "${path.module}/kubeconfig"
+    content     = "${data.google_storage_bucket_object.kubeconfig.md5hash}"
+    filename    = "${path.module}/kubeconfig"
 }
 
 module "deploy" {
@@ -24,7 +24,7 @@ module "deploy" {
 
     helm_service_account = "${var.helm_service_account}"
     helm_namespace = "${var.helm_namespace}"
-    kubeconfig = "${local_file.kubeconfig.path}"
+    kubeconfig = "${local_file.kubeconfig.filename}"
 
     ## app specific
     image_repository = "${var.image_repository}"

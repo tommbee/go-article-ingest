@@ -11,3 +11,4 @@ gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
 echo "Saving config to cache..."
 mkdir -p site-config
 gsutil cp gs://article-app-storage/${CONFIG_FILENAME} ./site-config/${CONFIG_FILENAME}
+gsutil cp gs://article-app-storage/kubeconfig ./kubeconfig
