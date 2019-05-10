@@ -42,12 +42,13 @@ jobs:
       - run: go test
   ## Deploy app to cluster using helm
   deploy:
-    docker:
-      - image: google/cloud-sdk
+    machine: true
     steps:
       - checkout
       - attach_workspace:
           at: .
+      - run: mkdir -p /usr/local
+      - run: curl https://sdk.cloud.google.com | bash
       - run: chmod +x ./deployment/deploy.sh
       - run: bash ./deployment/deploy.sh
 
