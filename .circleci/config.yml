@@ -43,13 +43,13 @@ jobs:
   ## Deploy app to cluster using helm
   deploy:
     docker:
-      - image: alpine/helm
+      - image: google/cloud-sdk
     steps:
       - checkout
       - attach_workspace:
           at: .
       - run: chmod +x ./deployment/deploy.sh
-      - run: sh ./deployment/deploy.sh
+      - run: bash ./deployment/deploy.sh
 
 workflows:
 

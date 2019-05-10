@@ -1,21 +1,15 @@
 #!/bin/bash
 
 ## install helm
-# echo "Check Helm is installed..."
-# if [[ $((helm) 2>&1 | grep "command not found" ) ]]; then
-#     echo "Installing Helm"
-#     curl https://raw.githubusercontent.com/helm/helm/master/scripts/get > get_helm.sh
-#     chmod 700 get_helm.sh
-#     ./get_helm.sh
-#     helm init --client-only --service-account tiller --wait --kubeconfig ./site-config/kubeconfig
-#     helm repo add coreos https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
-# fi
-
-pwd
-
-cat ./site-config/kubeconfig
-
-helm init --client-only --kubeconfig ./site-config/kubeconfig
+echo "Check Helm is installed..."
+if [[ $((helm) 2>&1 | grep "command not found" ) ]]; then
+    echo "Installing Helm"
+    curl https://raw.githubusercontent.com/helm/helm/master/scripts/get > get_helm.sh
+    chmod 700 get_helm.sh
+    ./get_helm.sh
+    helm init --client-only --kubeconfig ./site-config/kubeconfig
+    helm repo add coreos https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
+fi
 
 ## create namespace
 # echo "Creating app namespace..."
@@ -34,4 +28,5 @@ helm upgrade -i article-ingest ./article-ingest-k8s \
     --set dbUser=${DB_USER} \
     --set dbPassword=${DB_PASSWORD} \
     --set authDb=${AUTH_DB} \
-    --set dbSsl=${DB_SSL}
+    --set dbSsl=${DB_SSL} \
+    --kubeconfig ./site-config/kubeconfig
