@@ -12,9 +12,7 @@ if [[ $((helm) 2>&1 | grep "command not found" ) ]]; then
 fi
 
 ls -a
-pwd
-cd site-config && ls -a
-gcloud auth activate-service-account --key-file=./site-config/auth.json
+gcloud auth activate-service-account --key-file=auth.json
 
 ## create namespace
 # echo "Creating app namespace..."

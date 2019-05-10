@@ -50,6 +50,7 @@ jobs:
           at: . 
       - run: mkdir -p /usr/local/google-cloud-sdk
       - run: ln -s /usr/bin /usr/local/google-cloud-sdk/bin
+      - run: echo $GCLOUD_SERVICE_KEY > auth.json
       - run: chmod +x ./deployment/deploy.sh
       - run: bash ./deployment/deploy.sh
 
