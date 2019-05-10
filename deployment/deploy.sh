@@ -14,7 +14,7 @@ fi
 ls -a
 pwd
 cd site-config && ls -a
-gcloud auth activate-service-account --key-file=site-config/auth.json
+gcloud auth activate-service-account --key-file=./site-config/auth.json
 
 ## create namespace
 # echo "Creating app namespace..."
