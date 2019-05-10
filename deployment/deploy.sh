@@ -4,7 +4,7 @@
 echo "Check Helm is installed..."
 if [[ $((helm) 2>&1 | grep "command not found" ) ]]; then
     echo "Installing Helm"
-    curl https://raw.githubusercontent.com/helm/helm/master/scripts/get > get_helm.sh
+    curl https://raw.githubusercontent.com/helm/helm/v2.11.0/scripts/get > get_helm.sh
     chmod 700 get_helm.sh
     ./get_helm.sh
     helm init --client-only --kubeconfig ./site-config/kubeconfig
