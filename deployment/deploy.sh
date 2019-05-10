@@ -1,5 +1,8 @@
 #!/bin/bash
 
+## gcloud loginc
+gcloud auth activate-service-account --key-file=auth.json
+
 ## install helm
 echo "Check Helm is installed..."
 if [[ $((helm) 2>&1 | grep "command not found" ) ]]; then
@@ -10,8 +13,6 @@ if [[ $((helm) 2>&1 | grep "command not found" ) ]]; then
     helm init --upgrade --kubeconfig ./site-config/kubeconfig
     helm repo add coreos https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
 fi
-
-gcloud auth activate-service-account --key-file=auth.json
 
 ## create namespace
 # echo "Creating app namespace..."
