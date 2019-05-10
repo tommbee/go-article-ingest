@@ -43,7 +43,7 @@ jobs:
   ## Deploy app to cluster using helm
   deploy:
     docker:
-      - image: google/cloud-sdk
+      - image: alpine/helm
     steps:
       - checkout
       - attach_workspace:
