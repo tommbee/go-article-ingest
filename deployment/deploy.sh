@@ -7,12 +7,13 @@ if [[ $((helm) 2>&1 | grep "command not found" ) ]]; then
     curl https://raw.githubusercontent.com/helm/helm/master/scripts/get > get_helm.sh
     chmod 700 get_helm.sh
     ./get_helm.sh
-    helm init --service-account tiller --wait --kubeconfig kubeconfig
+    helm init --service-account tiller --wait --kubeconfig ./site-config/kubeconfig
     helm repo add coreos https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
 fi
 
 cwd
 ls -a
+cd site-config && ls -a
 
 ## create namespace
 echo "Creating app namespace..."

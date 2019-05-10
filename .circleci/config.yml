@@ -48,8 +48,6 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - run: cp site-config/${CONFIG_FILENAME} ./deployment/${CONFIG_FILENAME}
-      - run: cp site-config/${CONFIG_FILENAME} ./${CONFIG_FILENAME}
       - run: chmod +x ./deployment/deploy.sh
       - run: bash ./deployment/deploy.sh
 
