@@ -11,7 +11,13 @@
 #     helm repo add coreos https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
 # fi
 
+pwd
+
 cp ./site-config/kubeconfig /root/.kube/config
+
+ls -a
+
+helm init --client-only --kubeconfig ./site-config/kubeconfig
 
 ## create namespace
 # echo "Creating app namespace..."
