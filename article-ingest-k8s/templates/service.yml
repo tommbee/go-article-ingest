@@ -8,6 +8,7 @@ metadata:
     helm.sh/chart: {{ include "article-ingest-k8s.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+  namespace: {{ .Values.nameSpace }}
 spec:
   type: {{ .Values.service.type }}
   ports:

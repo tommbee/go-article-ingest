@@ -1,6 +1,6 @@
 #!/bin/bash
 
-## gcloud loginc
+## gcloud login
 gcloud auth activate-service-account --key-file=auth.json
 
 ## install helm
@@ -15,8 +15,8 @@ if [[ $((helm) 2>&1 | grep "command not found" ) ]]; then
 fi
 
 ## create namespace
-# echo "Creating app namespace..."
-# kubectl apply -f ./article-ingest-k8s/namespace.yml
+echo "Creating app namespace..."
+kubectl apply -f ./article-ingest-k8s/namespace.yml --kubeconfig ./site-config/kubeconfig
 
 ## deploy app
 echo "Deploying app via helm..."
@@ -32,4 +32,5 @@ helm upgrade -i article-ingest ./article-ingest-k8s \
     --set dbPassword=${DB_PASSWORD} \
     --set authDb=${AUTH_DB} \
     --set dbSsl=${DB_SSL} \
+    --set nameSpace=${NAMESPACE} \
     --kubeconfig ./site-config/kubeconfig

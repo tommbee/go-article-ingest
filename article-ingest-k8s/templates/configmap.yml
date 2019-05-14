@@ -6,3 +6,4 @@ data:
   sources: "{{ .Values.sources }}"
 metadata:
   name: {{ .Release.Name }}-configmap
+  namespace: {{ .Values.nameSpace }}
