@@ -10,7 +10,7 @@ jobs:
       - checkout
       - run: mkdir -p site-config
       - run: touch ./site-config/${CONFIG_FILENAME}
-      - run: echo $CONFIG|base64 -D >> ./site-config/${CONFIG_FILENAME}
+      - run: echo $CONFIG|base64 --decode >> ./site-config/${CONFIG_FILENAME}
       - persist_to_workspace:
           root: .
           paths:
