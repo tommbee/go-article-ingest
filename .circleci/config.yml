@@ -48,7 +48,6 @@ jobs:
           at: . 
       - run: mkdir -p ~/.ssh
       - run: echo "$PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-      - run: cat ~/.ssh/id_rsa
       - run: chmod 700 ~/.ssh/id_rsa
       - run: eval "$(ssh-agent -s)"
       - run: ssh-add ~/.ssh/id_rsa
