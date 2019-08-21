@@ -5,17 +5,16 @@ references:
 jobs:
   ## Compile the app
   build:
-    docker:
-      - image: google/cloud-sdk
+    machine: true
     steps:
       - checkout
-      - run: chmod +x ./deployment/build.sh
-      - run: bash ./deployment/build.sh
+      - run: mkdir -p site-config
+      - run: touch ./site-config/${CONFIG_FILENAME}
+      - run: echo $CONFIG|base64 -D >> ./site-config/${CONFIG_FILENAME}
       - persist_to_workspace:
           root: .
           paths:
             - site-config
-            - kubeconfig
   ## Push to the docker repo
   tag:
     machine: true
