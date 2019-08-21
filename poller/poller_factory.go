@@ -14,7 +14,7 @@ var configs model.Configs
 
 // Generate a suitable poller
 func Generate(URL string) (*Poller, error) {
-	fn := os.Getenv("CONFIG_FILE")
+	fn := os.Getenv("CONFIG_LOCATION")
 	jsonFile, err := os.Open(fn)
 	if err != nil {
 		return nil, err

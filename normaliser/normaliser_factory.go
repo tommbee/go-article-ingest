@@ -14,7 +14,7 @@ var configs model.Configs
 
 // Generate a suitable normaliser
 func Generate(URL string) (*Normaliser, error) {
-	fn := os.Getenv("CONFIG_FILE")
+	fn := os.Getenv("CONFIG_LOCATION")
 	jsonFile, err := os.Open(fn)
 	if err != nil {
 		return nil, err
